@@ -4,10 +4,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.db import create_engine, create_sessionmaker
+from app.deps import load_service_slugs
 from app.errors import install_error_handlers
 from app.logging import configure_logging
 from app.middleware import AccessLogMiddleware, RequestIdMiddleware
-from app.routes import health
+from app.routes import health, public_leads
 from app.settings import Settings, get_settings
 
 API_PREFIX = "/api/v1"
@@ -36,8 +37,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.state.settings = settings
     app.state.problem_base = settings.site_origin
+    app.state.service_slugs = load_service_slugs(settings.services_file)
     install_error_handlers(app)
     app.add_middleware(AccessLogMiddleware)
     app.add_middleware(RequestIdMiddleware)
     app.include_router(health.router, prefix=API_PREFIX)
+    app.include_router(public_leads.router, prefix=API_PREFIX)
     return app

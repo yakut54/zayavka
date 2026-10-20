@@ -16,6 +16,7 @@ dependencies = [
   "aiosmtplib",
   "jinja2",
   "structlog",
+  "httpx>=0.28.1",
 ]
 
 [dependency-groups]

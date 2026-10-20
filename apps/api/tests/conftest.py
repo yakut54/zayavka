@@ -1,5 +1,5 @@
 import os
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator, Callable, Iterator
 
 import pytest
 import pytest_asyncio
@@ -102,3 +102,19 @@ async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
     transport = ASGITransport(app=app, raise_app_exceptions=False)
     async with AsyncClient(transport=transport, base_url="http://test") as c:
         yield c
+
+
+@pytest_asyncio.fixture
+async def client_factory(app: FastAPI) -> AsyncIterator[Callable[[str], AsyncClient]]:
+    """Клиенты с заданным IP отправителя (разные посетители для rate limit)."""
+    clients: list[AsyncClient] = []
+
+    def make(ip: str) -> AsyncClient:
+        transport = ASGITransport(app=app, raise_app_exceptions=False, client=(ip, 5000))
+        c = AsyncClient(transport=transport, base_url="http://test")
+        clients.append(c)
+        return c
+
+    yield make
+    for c in clients:
+        await c.aclose()

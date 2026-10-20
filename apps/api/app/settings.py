@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pathlib import Path
 from typing import Annotated, Literal, Self
 
 from pydantic import PostgresDsn, SecretStr, field_validator, model_validator
@@ -28,6 +29,7 @@ class Settings(BaseSettings):
     max_chat_id: str | None = None
     smartcaptcha_server_key: SecretStr | None = None
     log_level: str = "INFO"
+    services_file: Path = Path(__file__).parent.parent / "services.json"
 
     @field_validator("notify_emails", mode="before")
     @classmethod
@@ -59,6 +61,13 @@ class Settings(BaseSettings):
     @property
     def is_prod(self) -> bool:
         return self.app_env == "prod"
+
+    @property
+    def enabled_channels(self) -> list[str]:
+        channels = ["email"] if self.smtp_host else ["log"]
+        if self.max_bot_token and self.max_chat_id:
+            channels.append("max")
+        return channels
 
     @property
     def sqlalchemy_url(self) -> str:
