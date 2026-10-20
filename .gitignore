@@ -12,3 +12,4 @@ coverage/
 storybook-static/
 .claude/
 CLAUDE.md
+.coverage

@@ -1,0 +1,16 @@
+pre-commit:
+  parallel: true
+  commands:
+    ruff:
+      root: apps/api/
+      glob: '*.py'
+      run: docker run --rm -v "{root}:/app" -w /app ghcr.io/astral-sh/uv:python3.14-bookworm uv run ruff check {staged_files}
+    prettier:
+      glob: '*.{ts,vue,js,json,css,md,yml}'
+      run: pnpm exec prettier --check {staged_files}
+    gitleaks:
+      run: gitleaks protect --staged --redact
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}

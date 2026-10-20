@@ -1,11 +1,21 @@
 {
   "name": "zayavka",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@10.30.3",
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "lint": "pnpm -r --if-present lint",
     "typecheck": "pnpm -r --if-present typecheck",
-    "test": "pnpm -r --if-present test"
+    "test": "pnpm -r --if-present test",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.0.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "lefthook": "^2.0.0",
+    "prettier": "^3.6.0"
   }
 }

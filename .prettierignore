@@ -1,0 +1,5 @@
+node_modules
+apps/api
+pnpm-lock.yaml
+spec.md
+*.pdf
