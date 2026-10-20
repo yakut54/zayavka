@@ -33,7 +33,7 @@ def payload(**overrides: Any) -> dict[str, Any]:
 
 
 async def count(session: AsyncSession, table: str) -> int:
-    return int((await session.execute(text(f"SELECT count(*) FROM {table}"))).scalar_one())  # noqa: S608
+    return int((await session.execute(text(f"SELECT count(*) FROM {table}"))).scalar_one())
 
 
 async def test_create_lead_writes_everything(client: AsyncClient, session: AsyncSession) -> None:

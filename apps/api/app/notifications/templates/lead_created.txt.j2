@@ -1,0 +1,11 @@
+Новая заявка № {{ lead.public_number }}
+
+Имя: {{ lead.name }}
+Телефон: {{ lead.phone_e164 }}
+{% if lead.email %}Email: {{ lead.email }}
+{% endif %}{% if lead.service_title or lead.service_slug %}Услуга: {{ lead.service_title or lead.service_slug }}
+{% endif %}{% if lead.message %}
+Сообщение:
+{{ lead.message }}
+{% endif %}
+Открыть в админке: {{ admin_url }}

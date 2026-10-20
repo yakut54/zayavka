@@ -32,7 +32,7 @@ target-version = "py314"
 select = ["E", "F", "I", "B", "UP", "S", "ASYNC", "SIM", "RUF"]
 ignore = ["RUF001", "RUF002", "RUF003"]  # кириллица в строках и комментариях
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "S105", "S106"]
+"tests/**" = ["S101", "S105", "S106", "S608", "E501"]
 
 [tool.mypy]
 strict = true
