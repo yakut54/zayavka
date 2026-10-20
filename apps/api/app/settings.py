@@ -63,6 +63,18 @@ class Settings(BaseSettings):
         return self.app_env == "prod"
 
     @property
+    def secure_cookies(self) -> bool:
+        return self.is_prod
+
+    @property
+    def session_cookie_name(self) -> str:
+        return "__Host-session" if self.is_prod else "session"
+
+    @property
+    def csrf_cookie_name(self) -> str:
+        return "__Host-csrf" if self.is_prod else "csrf"
+
+    @property
     def enabled_channels(self) -> list[str]:
         channels = ["email"] if self.smtp_host else ["log"]
         if self.max_bot_token and self.max_chat_id:

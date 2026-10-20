@@ -8,7 +8,7 @@ from app.deps import load_service_slugs
 from app.errors import install_error_handlers
 from app.logging import configure_logging
 from app.middleware import AccessLogMiddleware, RequestIdMiddleware
-from app.routes import health, public_leads
+from app.routes import admin_auth, health, public_leads
 from app.settings import Settings, get_settings
 
 API_PREFIX = "/api/v1"
@@ -43,4 +43,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(RequestIdMiddleware)
     app.include_router(health.router, prefix=API_PREFIX)
     app.include_router(public_leads.router, prefix=API_PREFIX)
+    app.include_router(admin_auth.router, prefix=API_PREFIX)
     return app

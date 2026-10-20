@@ -19,3 +19,4 @@ White-label лендинг с приёмом заявок и админкой. �
 - [x] M1 ядро API (миграции: `docker compose -f infra/compose.dev.yml exec api alembic upgrade head`)
 - [x] M2 приём заявок
 - [x] M3 уведомления (воркер `python -m app.worker`, CLI `python -m app.cli anonymize-expired`)
+- [x] M4 авторизация админки (CLI: `python -m app.cli create-admin --email ...`, `reset-password`)
