@@ -1,0 +1,14 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.env
+secrets/
+dist/
+coverage/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+storybook-static/
+.claude/
+CLAUDE.md

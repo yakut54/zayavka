@@ -1,0 +1,41 @@
+[project]
+name = "zayavka-api"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+  "fastapi>=0.136",
+  "uvicorn[standard]",
+  "pydantic>=2",
+  "pydantic-settings",
+  "email-validator",
+  "sqlalchemy[asyncio]>=2",
+  "asyncpg",
+  "alembic",
+  "argon2-cffi",
+  "phonenumbers",
+  "aiosmtplib",
+  "jinja2",
+  "structlog",
+]
+
+[dependency-groups]
+dev = [
+  "pytest", "pytest-asyncio", "pytest-cov", "httpx", "testcontainers[postgres]",
+  "polyfactory", "time-machine", "ruff", "mypy", "schemathesis", "pip-audit",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "ASYNC", "SIM", "RUF"]
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"]
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
