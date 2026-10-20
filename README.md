@@ -10,9 +10,10 @@ White-label лендинг с приёмом заявок и админкой. �
 
 ## Проверки (Windows без make)
 
-    docker run --rm -v "${PWD}/apps/api:/app" -w /app ghcr.io/astral-sh/uv:python3.14-bookworm uv run pytest --cov=app --cov-fail-under=90
+    scripts/uv.sh run pytest --cov=app --cov-fail-under=90   # нужен Docker (testcontainers)
     pnpm install && pnpm lint && pnpm format:check
 
 ## Статус этапов
 
 - [x] M0 скелет
+- [x] M1 ядро API (миграции: `docker compose -f infra/compose.dev.yml exec api alembic upgrade head`)
