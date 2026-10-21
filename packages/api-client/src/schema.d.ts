@@ -1562,6 +1562,16 @@ export interface operations {
                     "application/json": components["schemas"]["DayAvailability"][];
                 };
             };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description Нет сессии или истекла */
             401: {
                 headers: {
@@ -1616,6 +1626,16 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SlotsOut"];
+                };
+            };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -1673,6 +1693,16 @@ export interface operations {
                     "application/json": components["schemas"]["BookingPage"];
                 };
             };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description Нет сессии или истекла */
             401: {
                 headers: {
@@ -1728,6 +1758,16 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BookingView"];
+                };
+            };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -1814,6 +1854,16 @@ export interface operations {
                     "application/json": components["schemas"]["BookingView"];
                 };
             };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description Нет сессии или истекла */
             401: {
                 headers: {
@@ -1897,6 +1947,16 @@ export interface operations {
                 content: {
                     "application/json": unknown;
                     "text/calendar": unknown;
+                };
+            };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -1985,6 +2045,16 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BookingView"];
+                };
+            };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -2076,6 +2146,16 @@ export interface operations {
                     "application/json": components["schemas"]["BookingView"];
                 };
             };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description Нет сессии или истекла */
             401: {
                 headers: {
@@ -2158,6 +2238,16 @@ export interface operations {
                     "application/json": components["schemas"]["Bootstrap"];
                 };
             };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
             /** @description Нет сессии или истекла */
             401: {
                 headers: {
@@ -2210,6 +2300,16 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DemoSession"];
+                };
+            };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -2276,6 +2376,16 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MaxLeadCreated"];
+                };
+            };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Problem"];
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */

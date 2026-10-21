@@ -64,8 +64,10 @@ CurrentUser = Annotated[MaxUser, Depends(current_max_user)]
 Bookings = Annotated[BookingService, Depends(get_booking_service)]
 IdempotencyKey = Annotated[uuid.UUID, Header(alias="Idempotency-Key")]
 
-router = APIRouter(prefix="/max/app", tags=["max-app"], responses=problem_responses(401, 422, 429))
-protected = problem_responses(401, 403, 404, 409, 422, 429)
+router = APIRouter(
+    prefix="/max/app", tags=["max-app"], responses=problem_responses(400, 401, 422, 429)
+)
+protected = problem_responses(400, 401, 403, 404, 409, 422, 429)
 
 
 def to_view(result: BookingResult, deadline_min: int, service: BookingService) -> BookingView:
@@ -291,7 +293,7 @@ async def booking_calendar(
     )
 
 
-@router.post("/leads", status_code=201, responses=problem_responses(401, 422, 429))
+@router.post("/leads", status_code=201, responses=problem_responses(400, 401, 422, 429))
 async def create_lead(
     payload: LeadCreate,
     request: Request,
@@ -307,7 +309,7 @@ async def create_lead(
     return MaxLeadCreated(public_number=number)
 
 
-@router.post("/demo-session", responses=problem_responses(404, 422, 429))
+@router.post("/demo-session", responses=problem_responses(400, 404, 422, 429))
 async def demo_session(payload: DemoSessionRequest, request: Request) -> DemoSession:
     settings = cast(Settings, request.app.state.settings)
     authenticator = cast(MaxAuthenticator, request.app.state.max_auth)

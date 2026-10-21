@@ -33,6 +33,10 @@
 	handle /api/* {
 		reverse_proxy api:8000
 	}
+	# схема OpenAPI для контрактных тестов; в prod API её не отдаёт (404)
+	handle /openapi.json {
+		reverse_proxy api:8000
+	}
 	handle {
 		try_files {path} {path}/index.html
 		file_server
