@@ -3,7 +3,7 @@ name = "zayavka-api"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
-  "fastapi>=0.136",
+  "fastapi>=0.144.0",
   "uvicorn[standard]",
   "pydantic>=2",
   "pydantic-settings",
