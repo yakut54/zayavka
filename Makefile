@@ -7,11 +7,11 @@ test: test-api test-web
 test-api:
 	$(UV) run pytest --cov=app --cov-fail-under=90
 test-web:
-	pnpm -r test
+	pnpm -r --if-present test
 lint:
 	$(UV) run ruff check .
 	$(UV) run ruff format --check .
-	pnpm -r lint
+	pnpm lint
 typecheck:
 	$(UV) run mypy --strict app
 	pnpm -r typecheck

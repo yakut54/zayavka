@@ -1,0 +1,6 @@
+/*
+ * Inter подключается из npm-пакета и собирается в ассеты сайта (woff2, font-display: swap):
+ * никаких запросов к Google Fonts (152-ФЗ). Браузер скачивает только нужные
+ * подмножества (latin, cyrillic) благодаря unicode-range.
+ */
+@import '@fontsource-variable/inter/wght.css';

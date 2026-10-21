@@ -7,15 +7,26 @@
     "node": ">=24"
   },
   "scripts": {
-    "lint": "pnpm -r --if-present lint",
+    "lint": "eslint . && stylelint \"packages/**/*.{css,vue}\" \"apps/**/*.{css,vue}\" --allow-empty-input && prettier --check .",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
-    "format:check": "prettier --check ."
+    "format": "prettier --write .",
+    "i18n:check": "pnpm --filter @app/i18n i18n:check"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.0.0",
     "@commitlint/config-conventional": "^20.0.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.11.1",
+    "globals": "^17.13.0",
     "lefthook": "^2.0.0",
-    "prettier": "^3.6.0"
+    "postcss-html": "^2.0.0",
+    "prettier": "^3.6.0",
+    "stylelint": "^17.16.0",
+    "stylelint-config-standard": "^40.0.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.72.0"
   }
 }

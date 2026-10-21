@@ -1,0 +1,180 @@
+/*
+ * Дизайн-токены (раздел 10.2 ТЗ). Единственное место, где разрешены сырые цвета.
+ * Значения «текстовых» цветов подобраны так, чтобы проходить WCAG 2.2 AA:
+ * это проверяет tests/tokens.contrast.test.ts.
+ */
+
+:root {
+  /* Цвет бренда: оттенок задаётся из site.config.ts при сборке */
+  --brand-hue: 250;
+  --brand-50: oklch(97% 0.02 var(--brand-hue));
+  --brand-100: oklch(93% 0.04 var(--brand-hue));
+  --brand-400: oklch(72% 0.14 var(--brand-hue));
+  --brand-500: oklch(60% 0.15 var(--brand-hue));
+  --brand-600: oklch(53% 0.15 var(--brand-hue));
+  --brand-700: oklch(46% 0.14 var(--brand-hue));
+
+  --gray-0: #ffffff;
+  --gray-50: #f7f7f8;
+  --gray-100: #eeeef0;
+  --gray-300: #c9c9ce;
+  --gray-500: #8a8a93;
+  --gray-600: #5b5b64;
+  --gray-700: #3f3f46;
+  --gray-800: #27272a;
+  --gray-900: #18181b;
+  --gray-950: #101012;
+
+  --red-50: #fef2f2;
+  --red-600: #dc2626;
+  --red-700: #b91c1c;
+  --red-400: #f87171;
+  --green-50: #f0fdf4;
+  --green-700: #15803d;
+  --green-400: #4ade80;
+  --amber-50: #fffbeb;
+  --amber-700: #b45309;
+  --amber-400: #fbbf24;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  /* Шрифты хостятся локально (без внешних запросов); системный стек как запасной */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'JetBrains Mono', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+  --text-3xl: clamp(1.875rem, 1.4rem + 2vw, 2.5rem);
+  --text-display: clamp(2.25rem, 1.5rem + 3.5vw, 3.75rem);
+  --leading-tight: 1.15;
+  --leading-normal: 1.5;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.12);
+
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  --z-header: 100;
+  --z-drawer: 400;
+  --z-modal: 500;
+  --z-toast: 600;
+
+  --container-sm: 40rem;
+  --container-md: 48rem;
+  --container-lg: 64rem;
+  --container-xl: 80rem;
+
+  --control-height-sm: 36px;
+  --control-height-md: 44px;
+  --control-height-lg: 52px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* Семантические токены: ими пользуются компоненты */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: var(--gray-50);
+  --color-surface: var(--gray-0);
+  --color-surface-raised: var(--gray-0);
+  --color-surface-muted: var(--gray-100);
+  --color-text: var(--gray-900);
+  --color-text-muted: var(--gray-600);
+  --color-text-inverse: var(--gray-0);
+  --color-border: var(--gray-100);
+  --color-border-strong: var(--gray-300);
+  --color-border-input: var(--gray-500);
+  --color-accent: var(--brand-600);
+  --color-accent-hover: var(--brand-700);
+  --color-accent-subtle: var(--brand-50);
+  --color-danger: var(--red-700);
+  --color-danger-subtle: var(--red-50);
+  --color-success: var(--green-700);
+  --color-success-subtle: var(--green-50);
+  --color-warning: var(--amber-700);
+  --color-warning-subtle: var(--amber-50);
+  --color-focus-ring: var(--brand-500);
+  --color-overlay: rgb(24 24 27 / 0.5);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: var(--gray-950);
+  --color-surface: var(--gray-900);
+  --color-surface-raised: var(--gray-800);
+  --color-surface-muted: var(--gray-800);
+  --color-text: #f4f4f5;
+  --color-text-muted: #a1a1aa;
+  --color-text-inverse: var(--gray-900);
+  --color-border: var(--gray-800);
+  --color-border-strong: var(--gray-700);
+  --color-border-input: #8a8a93;
+  --color-accent: var(--brand-400);
+  --color-accent-hover: oklch(78% 0.13 var(--brand-hue));
+  --color-accent-subtle: oklch(28% 0.06 var(--brand-hue));
+  --color-danger: var(--red-400);
+  --color-danger-subtle: #3b1517;
+  --color-success: var(--green-400);
+  --color-success-subtle: #12301c;
+  --color-warning: var(--amber-400);
+  --color-warning-subtle: #35260a;
+  --color-focus-ring: var(--brand-400);
+  --color-overlay: rgb(0 0 0 / 0.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --color-bg: var(--gray-950);
+    --color-surface: var(--gray-900);
+    --color-surface-raised: var(--gray-800);
+    --color-surface-muted: var(--gray-800);
+    --color-text: #f4f4f5;
+    --color-text-muted: #a1a1aa;
+    --color-text-inverse: var(--gray-900);
+    --color-border: var(--gray-800);
+    --color-border-strong: var(--gray-700);
+    --color-border-input: #8a8a93;
+    --color-accent: var(--brand-400);
+    --color-accent-hover: oklch(78% 0.13 var(--brand-hue));
+    --color-accent-subtle: oklch(28% 0.06 var(--brand-hue));
+    --color-danger: var(--red-400);
+    --color-danger-subtle: #3b1517;
+    --color-success: var(--green-400);
+    --color-success-subtle: #12301c;
+    --color-warning: var(--amber-400);
+    --color-warning-subtle: #35260a;
+    --color-focus-ring: var(--brand-400);
+    --color-overlay: rgb(0 0 0 / 0.65);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+  }
+}

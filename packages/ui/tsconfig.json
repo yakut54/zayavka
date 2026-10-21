@@ -1,0 +1,15 @@
+{
+  "extends": "@app/config/tsconfig.vue.json",
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "jsx": "preserve"
+  },
+  "include": [
+    "src/**/*",
+    "src/**/*.vue",
+    "tests/**/*",
+    ".storybook/**/*",
+    "vitest.config.ts",
+    "vite.config.ts"
+  ]
+}

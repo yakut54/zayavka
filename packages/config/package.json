@@ -4,11 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "files": [
+    "tsconfig.vue.json",
     "tsconfig.base.json",
-    "prettier.config.js"
+    "prettier.config.js",
+    "eslint.base.js",
+    "stylelint.base.js"
   ],
   "exports": {
     "./tsconfig.base.json": "./tsconfig.base.json",
-    "./prettier": "./prettier.config.js"
+    "./tsconfig.vue.json": "./tsconfig.vue.json",
+    "./prettier": "./prettier.config.js",
+    "./eslint": "./eslint.base.js",
+    "./stylelint": "./stylelint.base.js"
   }
 }

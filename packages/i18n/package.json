@@ -1,0 +1,23 @@
+{
+  "name": "@app/i18n",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "i18n:check": "node scripts/check.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "vue": "^3.5.0",
+    "vue-i18n": "^11.1.0"
+  },
+  "devDependencies": {
+    "@app/config": "workspace:*",
+    "typescript": "~5.9.0",
+    "vite": "^8.0.0",
+    "vitest": "^5.0.0"
+  }
+}
