@@ -215,12 +215,22 @@ describe('Textarea', () => {
     expect(emitted().submit).toHaveLength(2)
   })
 
-  it('autoresize подстраивает высоту', async () => {
-    renderWithApp(Textarea, { props: { autoresize: true, modelValue: 'a' } })
+  it('autoresize: высота задаётся CSS-копией текста, без JS-стилей', async () => {
+    const { container } = renderWithApp(Textarea, {
+      props: { autoresize: true, modelValue: 'a\nb', maxRows: 6 },
+    })
+    const field = container.querySelector('.ui-textarea__field') as HTMLElement
+    expect(field.dataset.value).toBe('a\nb')
+    expect(field.dataset.maxRows).toBe('6')
     const area = screen.getByRole('textbox') as HTMLTextAreaElement
-    Object.defineProperty(area, 'scrollHeight', { value: 120, configurable: true })
     await fireEvent.update(area, 'a\nb\nc')
-    expect(area.style.height).toBe('120px')
+    expect(container.querySelector('textarea')?.getAttribute('style')).toBeNull()
+  })
+
+  it('без autoresize копия текста не нужна', () => {
+    const { container } = renderWithApp(Textarea)
+    const field = container.querySelector('.ui-textarea__field') as HTMLElement
+    expect(field.dataset.value).toBeUndefined()
   })
 
   it('атрибуты: invalid, placeholder, name, class на корне', () => {

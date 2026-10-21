@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { MessageKey } from '@app/i18n'
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useSplitAttrs } from '../../composables/useSplitAttrs'
@@ -39,16 +39,8 @@ const nearLimit = computed(
   () => props.maxlength !== undefined && length.value >= props.maxlength * 0.9,
 )
 
-function resize(): void {
-  const node = el.value
-  if (!props.autoresize || !node) return
-  node.style.height = 'auto'
-  node.style.height = `${node.scrollHeight}px`
-}
-
 function onInput(event: Event): void {
   emit('update:modelValue', (event.target as HTMLTextAreaElement).value)
-  resize()
 }
 
 function onKeydown(event: KeyboardEvent): void {
@@ -58,16 +50,6 @@ function onKeydown(event: KeyboardEvent): void {
   }
 }
 
-onMounted(() => {
-  // CSSOM, а не style-атрибут: строгий CSP (style-src 'self') запрещает инлайновые стили в HTML
-  el.value?.style.setProperty('--ui-rows', String(props.maxRows))
-  resize()
-})
-watch(
-  () => props.modelValue,
-  () => nextTick(resize),
-)
-
 defineExpose({ focus: () => el.value?.focus() })
 </script>
 
@@ -76,22 +58,30 @@ defineExpose({ focus: () => el.value?.focus() })
     :class="['ui-textarea', { 'ui-textarea--invalid': invalid, 'ui-textarea--disabled': disabled }]"
     v-bind="rootAttrs"
   >
-    <textarea
-      ref="el"
-      :class="['ui-textarea__control', { 'ui-textarea__control--auto': autoresize }]"
-      :value="modelValue"
-      :rows="rows"
-      :name="name"
-      :maxlength="maxlength"
-      :placeholder="placeholder ? t(placeholder) : undefined"
-      :readonly="readonly"
-      :disabled="disabled"
-      :aria-invalid="invalid ? 'true' : undefined"
-      v-bind="textareaAttrs"
-      @input="onInput"
-      @keydown="onKeydown"
-      @blur="emit('blur', $event)"
-    />
+    <!-- Автовысота без JS-стилей (WebKit при строгом CSP не принимает правки style):
+         невидимая копия текста в той же ячейке сетки задаёт высоту, а maxRows — data-атрибут. -->
+    <div
+      :class="['ui-textarea__field', { 'ui-textarea__field--auto': autoresize }]"
+      :data-value="autoresize ? modelValue : undefined"
+      :data-max-rows="autoresize ? maxRows : undefined"
+    >
+      <textarea
+        ref="el"
+        :class="['ui-textarea__control', { 'ui-textarea__control--auto': autoresize }]"
+        :value="modelValue"
+        :rows="rows"
+        :name="name"
+        :maxlength="maxlength"
+        :placeholder="placeholder ? t(placeholder) : undefined"
+        :readonly="readonly"
+        :disabled="disabled"
+        :aria-invalid="invalid ? 'true' : undefined"
+        v-bind="textareaAttrs"
+        @input="onInput"
+        @keydown="onKeydown"
+        @blur="emit('blur', $event)"
+      />
+    </div>
     <Text
       v-if="maxlength !== undefined"
       k="ui.textarea.counter"
@@ -125,10 +115,111 @@ defineExpose({ focus: () => el.value?.focus() })
   transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
+.ui-textarea__field {
+  display: grid;
+}
+
+.ui-textarea__field > * {
+  grid-area: 1 / 1;
+}
+
+.ui-textarea__field--auto::after {
+  content: attr(data-value) ' ';
+  white-space: pre-wrap;
+  visibility: hidden;
+  overflow-wrap: anywhere;
+  padding: var(--space-3);
+  border: 1px solid transparent;
+  font: inherit;
+  line-height: var(--leading-normal);
+  max-height: calc(1lh * var(--ui-rows, 10) + var(--space-6));
+  grid-area: 1 / 1;
+}
+
 .ui-textarea__control--auto {
   resize: none;
   overflow-y: auto;
-  max-height: calc(1lh * var(--ui-rows) + var(--space-6));
+  height: 100%;
+}
+
+.ui-textarea__field[data-max-rows='1'] {
+  --ui-rows: 1;
+}
+
+.ui-textarea__field[data-max-rows='2'] {
+  --ui-rows: 2;
+}
+
+.ui-textarea__field[data-max-rows='3'] {
+  --ui-rows: 3;
+}
+
+.ui-textarea__field[data-max-rows='4'] {
+  --ui-rows: 4;
+}
+
+.ui-textarea__field[data-max-rows='5'] {
+  --ui-rows: 5;
+}
+
+.ui-textarea__field[data-max-rows='6'] {
+  --ui-rows: 6;
+}
+
+.ui-textarea__field[data-max-rows='7'] {
+  --ui-rows: 7;
+}
+
+.ui-textarea__field[data-max-rows='8'] {
+  --ui-rows: 8;
+}
+
+.ui-textarea__field[data-max-rows='9'] {
+  --ui-rows: 9;
+}
+
+.ui-textarea__field[data-max-rows='10'] {
+  --ui-rows: 10;
+}
+
+.ui-textarea__field[data-max-rows='11'] {
+  --ui-rows: 11;
+}
+
+.ui-textarea__field[data-max-rows='12'] {
+  --ui-rows: 12;
+}
+
+.ui-textarea__field[data-max-rows='13'] {
+  --ui-rows: 13;
+}
+
+.ui-textarea__field[data-max-rows='14'] {
+  --ui-rows: 14;
+}
+
+.ui-textarea__field[data-max-rows='15'] {
+  --ui-rows: 15;
+}
+
+.ui-textarea__field[data-max-rows='16'] {
+  --ui-rows: 16;
+}
+
+.ui-textarea__field[data-max-rows='17'] {
+  --ui-rows: 17;
+}
+
+.ui-textarea__field[data-max-rows='18'] {
+  --ui-rows: 18;
+}
+
+.ui-textarea__field[data-max-rows='19'] {
+  --ui-rows: 19;
+}
+
+.ui-textarea__field[data-max-rows='20'] {
+  --ui-rows: 20;
 }
 
 .ui-textarea__control::placeholder {
