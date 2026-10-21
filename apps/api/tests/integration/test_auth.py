@@ -127,9 +127,12 @@ async def test_eleventh_login_attempt_is_rate_limited(
 
 
 async def test_login_validation(client: AsyncClient) -> None:
-    r = await client.post(f"{BASE}/login", json={"email": "nope", "password": "x"})
+    r = await client.post(f"{BASE}/login", json={"email": "ab", "password": "x"})
     assert r.status_code == 422
-    assert r.json()["errors"] == [{"field": "email", "code": "email_invalid"}]
+    assert r.json()["errors"] == [{"field": "email", "code": "too_short"}]
+    # не-email — просто неверные учётные данные, без подсказок
+    r = await client.post(f"{BASE}/login", json={"email": "nope", "password": "x"})
+    assert r.status_code == 401
 
 
 async def test_state_changing_requests_require_csrf(

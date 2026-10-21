@@ -20,3 +20,4 @@ White-label лендинг с приёмом заявок и админкой. �
 - [x] M2 приём заявок
 - [x] M3 уведомления (воркер `python -m app.worker`, CLI `python -m app.cli anonymize-expired`)
 - [x] M4 авторизация админки (CLI: `python -m app.cli create-admin --email ...`, `reset-password`)
+- [x] M5 API админки (`scripts/contract.sh` — schemathesis; `make openapi` — схема и типизированный клиент)

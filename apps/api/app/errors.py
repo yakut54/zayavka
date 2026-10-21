@@ -1,3 +1,4 @@
+import re
 from typing import Any, cast
 
 from fastapi import FastAPI, Request
@@ -88,7 +89,7 @@ async def domain_error_handler(request: Request, exc: Exception) -> JSONResponse
 async def validation_error_handler(request: Request, exc: Exception) -> JSONResponse:
     exc = cast(RequestValidationError, exc)
     details = exc.errors()
-    if any(d["type"] in ("json_invalid", "model_attributes_type") for d in details):
+    if any(d["type"] == "json_invalid" for d in details):
         return problem_response(request, status=400, code="bad_request", detail="Некорректный JSON")
     return problem_response(
         request,
@@ -99,10 +100,29 @@ async def validation_error_handler(request: Request, exc: Exception) -> JSONResp
     )
 
 
+def _allowed_methods(request: Request) -> str | None:
+    """Allow для 405: все методы из схемы для пути (Starlette учитывает только один маршрут)."""
+    methods: set[str] = set()
+    paths: dict[str, dict[str, object]] = request.app.openapi().get("paths", {})
+    if request.url.path in paths:  # литеральный путь важнее шаблона (/export.csv vs /{lead_id})
+        paths = {request.url.path: paths[request.url.path]}
+    for template, operations in paths.items():
+        parts = re.split(r"({[^}]+})", template)
+        pattern = "".join("[^/]+" if p.startswith("{") else re.escape(p) for p in parts)
+        if re.fullmatch(pattern, request.url.path):
+            methods.update(m.upper() for m in operations if m != "parameters")
+    return ", ".join(sorted(methods)) or None
+
+
 async def http_error_handler(request: Request, exc: Exception) -> JSONResponse:
     exc = cast(StarletteHTTPException, exc)
     code, detail = _HTTP_CODES.get(exc.status_code, ("internal_error", "Ошибка"))
-    return problem_response(request, status=exc.status_code, code=code, detail=detail)
+    headers = {str(k): str(v) for k, v in (exc.headers or {}).items()}
+    if exc.status_code == 405 and (allow := _allowed_methods(request)):
+        headers["Allow"] = allow
+    return problem_response(
+        request, status=exc.status_code, code=code, detail=detail, headers=headers
+    )
 
 
 async def unhandled_error_handler(request: Request, exc: Exception) -> JSONResponse:

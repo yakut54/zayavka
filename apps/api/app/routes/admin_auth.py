@@ -6,12 +6,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth_deps import CsrfAdmin, CurrentAdmin, get_auth_service, get_settings_dep
 from app.db import get_session
 from app.schemas.auth import AdminMe, LoginRequest, PasswordChange
+from app.schemas.problem import problem_responses
 from app.security.ip import client_ip
 from app.security.sessions import NewSession
 from app.services.auth import AuthService
 from app.settings import Settings
 
-router = APIRouter(prefix="/admin/auth", tags=["admin-auth"])
+router = APIRouter(
+    prefix="/admin/auth",
+    tags=["admin-auth"],
+    responses=problem_responses(400, 401, 403, 422, 429),
+)
 
 Service = Annotated[AuthService, Depends(get_auth_service)]
 Session = Annotated[AsyncSession, Depends(get_session)]

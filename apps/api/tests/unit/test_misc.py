@@ -61,3 +61,25 @@ async def test_captcha_fails_open_on_network_error() -> None:
         raise httpx.ConnectTimeout("timeout")
 
     assert await _verifier(httpx.MockTransport(boom)).verify("t", "1.1.1.1") is True
+
+
+@pytest.mark.parametrize("value", ["=1+1", "+7999", "-5", "@x", "\tx", "\rx"])
+def test_csv_escape_prefixes_formulas(value: str) -> None:
+    from app.services.admin_leads import escape_csv_cell
+
+    assert escape_csv_cell(value) == "'" + value
+
+
+@pytest.mark.parametrize("value", ["", "Иван", "8 (912) 345-67-89", "a=b"])
+def test_csv_escape_keeps_safe_values(value: str) -> None:
+    from app.services.admin_leads import escape_csv_cell
+
+    assert escape_csv_cell(value) == value
+
+
+def test_format_phone() -> None:
+    from app.services.admin_leads import format_phone
+
+    assert format_phone("+79123456789") == "8 (912) 345-67-89"
+    assert format_phone("+442079460958") == "+44 20 7946 0958"
+    assert format_phone("garbage") == "garbage"

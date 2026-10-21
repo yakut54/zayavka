@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Literal, Self
+from zoneinfo import ZoneInfo
 
 from pydantic import PostgresDsn, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
@@ -30,12 +31,22 @@ class Settings(BaseSettings):
     smartcaptcha_server_key: SecretStr | None = None
     log_level: str = "INFO"
     services_file: Path = Path(__file__).parent.parent / "services.json"
+    business_timezone: str = "Asia/Novosibirsk"
 
     @field_validator("notify_emails", mode="before")
     @classmethod
     def split_emails(cls, v: str | list[str]) -> list[str]:
         if isinstance(v, str):
             return [e.strip() for e in v.split(",") if e.strip()]
+        return v
+
+    @field_validator("business_timezone")
+    @classmethod
+    def check_timezone(cls, v: str) -> str:
+        try:
+            ZoneInfo(v)
+        except (KeyError, ValueError) as exc:
+            raise ValueError(f"unknown timezone: {v}") from exc
         return v
 
     @model_validator(mode="after")

@@ -16,6 +16,9 @@ typecheck:
 	$(UV) run mypy --strict app
 	pnpm -r typecheck
 openapi:
-	$(UV) run python -m app.export_openapi > ../../packages/api-client/openapi.json
+	$(UV) run python -m app.export_openapi > packages/api-client/openapi.json
+	pnpm --filter @app/api-client generate
+contract:
+	scripts/contract.sh
 migrate:
 	docker compose -f infra/compose.dev.yml exec api alembic upgrade head
