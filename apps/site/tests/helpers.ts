@@ -31,6 +31,7 @@ export async function mountApp(path = '/', root: Component = App) {
     await vi.waitFor(
       () => {
         expect(wrapper.find('input[name="name"]').exists()).toBe(true)
+        expect(wrapper.find('h1').exists()).toBe(true) // герой тоже грузится лениво
         expect(wrapper.findAll('section[id]')).toHaveLength(HOME_SECTIONS)
       },
       { timeout: 10_000 },
