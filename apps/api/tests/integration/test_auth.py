@@ -314,6 +314,7 @@ async def test_prod_cookies_use_host_prefix_and_secure(
         smtp_host="h",
         smtp_user="u",
         smtp_password="p",
+        miniapp_origin="https://max.example.ru",
         smtp_from="f",
     )
     application: FastAPI = create_app(prod)

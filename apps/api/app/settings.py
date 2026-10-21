@@ -29,6 +29,12 @@ class Settings(BaseSettings):
     smtp_from: str | None = None
     max_bot_token: SecretStr | None = None
     max_chat_id: str | None = None
+    max_webhook_secret: SecretStr | None = None
+    max_api_base: str = "https://platform-api2.max.ru"
+    miniapp_origin: str | None = None
+    max_init_data_ttl_hours: int = 24
+    max_demo_bridge: bool = False
+    max_demo_bot_token: SecretStr | None = None
     smartcaptcha_server_key: SecretStr | None = None
     log_level: str = "INFO"
     services_file: Path = Path(__file__).parent.parent / "services.json"
@@ -66,8 +72,16 @@ class Settings(BaseSettings):
             )
             if not value
         ]
+        if not self.miniapp_origin:
+            missing.append("MINIAPP_ORIGIN")
         if missing:
             raise ValueError(f"missing required prod settings: {', '.join(missing)}")
+        if self.max_demo_bridge:
+            demo, real = self.max_demo_bot_token, self.max_bot_token
+            if demo is None:
+                raise ValueError("MAX_DEMO_BOT_TOKEN is required when MAX_DEMO_BRIDGE is on")
+            if real is not None and demo.get_secret_value() == real.get_secret_value():
+                raise ValueError("MAX_DEMO_BOT_TOKEN must differ from MAX_BOT_TOKEN")
         return self
 
     @property

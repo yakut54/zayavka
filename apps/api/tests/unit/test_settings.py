@@ -17,6 +17,7 @@ PROD_SMTP: dict[str, object] = {
     "smtp_user": "u",
     "smtp_password": "p",
     "smtp_from": "Заявки <noreply@example.ru>",
+    "miniapp_origin": "https://max.example.ru",
 }
 
 

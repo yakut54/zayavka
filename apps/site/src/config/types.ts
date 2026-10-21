@@ -42,6 +42,16 @@ export interface SiteConfig {
   seo: { title: MessageKey; description: MessageKey }
   analytics: { yandexMetrikaId: string | null }
   leadForm: { callbackMinutes: number }
+  /** Мини-приложение MAX (проект 2). */
+  max: {
+    bookingEnabled: boolean
+    /** Имя бота без @; для ссылок «Записаться онлайн». */
+    botUsername: string
+    miniAppUrl: string
+    /** Контакты поддержки и сведения об операторе — ключи словаря. */
+    supportContact: MessageKey
+    operator: MessageKey
+  }
 }
 
 /** Идентичность с типизацией: проверка значений выполняется при сборке (vite/site-plugin). */

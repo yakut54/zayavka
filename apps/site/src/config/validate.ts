@@ -98,6 +98,13 @@ export function validateSiteConfig(
     seo: z.object({ title: key, description: key }),
     analytics: z.object({ yandexMetrikaId: z.string().regex(/^\d+$/).nullable() }),
     leadForm: z.object({ callbackMinutes: z.number().int().positive() }),
+    max: z.object({
+      bookingEnabled: z.boolean(),
+      botUsername: z.string().regex(/^[A-Za-z0-9_]{3,64}$/, 'имя бота: латиница, цифры, _'),
+      miniAppUrl: z.url({ protocol: /^https$/ }),
+      supportContact: key,
+      operator: key,
+    }),
   })
 
   const parsed = schema.safeParse(config)

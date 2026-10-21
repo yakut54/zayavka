@@ -18,6 +18,17 @@ export function buildServicesJson(config: SiteConfig, dictionary: Dictionary): s
   const data = {
     slugs: config.services.map((s) => s.slug),
     titles: Object.fromEntries(config.services.map((s) => [s.slug, lookup(dictionary, s.title)])),
+    business: {
+      name: lookup(dictionary, config.brand.name),
+      phone: config.contacts.phoneE164,
+      address: lookup(dictionary, config.contacts.address),
+      workingHours: lookup(dictionary, config.contacts.workingHours),
+      timezone: config.contacts.timezone,
+      siteUrl: config.url,
+      policyVersion: config.policyVersion,
+      support: lookup(dictionary, config.max.supportContact),
+      operator: lookup(dictionary, config.max.operator),
+    },
     services: config.services.map((s) => ({
       slug: s.slug,
       title: lookup(dictionary, s.title),

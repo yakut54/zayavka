@@ -3,7 +3,7 @@ from collections.abc import Collection
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from app.domain.enums import LeadEventType
+from app.domain.enums import LeadEventType, LeadSource
 from app.domain.errors import FieldError, ValidationFailed
 from app.logging import get_logger
 from app.repositories import leads as repo
@@ -34,7 +34,14 @@ class LeadService:
         self._consent_sha = consent_text_sha256
         self._captcha = captcha
 
-    async def create(self, data: LeadCreate, *, ip: str, user_agent: str) -> int:
+    async def create(
+        self,
+        data: LeadCreate,
+        *,
+        ip: str,
+        user_agent: str,
+        source: LeadSource = LeadSource.SITE,
+    ) -> int:
         ip_hash = hash_ip(ip, self._settings.secret_key.get_secret_value())
         await ratelimit.enforce(
             self._sessionmaker, f"leads:{ip_hash.hex()}", self._settings.rate_limit_leads
@@ -60,7 +67,7 @@ class LeadService:
             raise ValidationFailed(errors)
 
         async with self._sessionmaker() as session, session.begin():
-            return await self._store(session, data, phone, ip_hash, user_agent)
+            return await self._store(session, data, phone, ip_hash, user_agent, source)
 
     async def _verify_captcha(self, captcha: CaptchaVerifier, data: LeadCreate, ip: str) -> bool:
         if not data.captcha_token:
@@ -74,6 +81,7 @@ class LeadService:
         phone: str,
         ip_hash: bytes,
         user_agent: str,
+        source: LeadSource,
     ) -> int:
         consent = await repo.add_consent(
             session,
@@ -91,6 +99,7 @@ class LeadService:
             service_slug=data.service_slug,
             utm={str(k): v for k, v in data.utm.items()},
             consent_id=consent.id,
+            source=source,
         )
         await repo.add_event(session, lead_id=lead.id, type_=LeadEventType.CREATED, payload={})
         for channel in self._settings.enabled_channels:

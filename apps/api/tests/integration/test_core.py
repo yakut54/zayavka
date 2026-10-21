@@ -166,6 +166,7 @@ async def test_openapi_hidden_in_prod() -> None:
         smtp_user="u",
         smtp_password="p",
         smtp_from="f",
+        miniapp_origin="https://max.example.ru",
     )
     application = create_app(prod)
     transport = ASGITransport(app=application)

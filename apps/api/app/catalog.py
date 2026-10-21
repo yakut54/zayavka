@@ -29,3 +29,33 @@ def load_catalog(path: Path) -> dict[str, CatalogService]:
             buffer_min=int(item.get("bufferMin", 0)) if bookable else 0,
         )
     return catalog
+
+
+@dataclass(frozen=True, slots=True)
+class Business:
+    """Сведения о бизнесе из конфига сайта (попадают в services.json при сборке)."""
+
+    name: str
+    phone: str
+    address: str
+    working_hours: str
+    timezone: str
+    site_url: str
+    policy_version: str
+    support: str
+    operator: str
+
+
+def load_business(path: Path) -> Business:
+    raw = json.loads(path.read_text(encoding="utf-8"))["business"]
+    return Business(
+        name=raw["name"],
+        phone=raw["phone"],
+        address=raw["address"],
+        working_hours=raw["workingHours"],
+        timezone=raw["timezone"],
+        site_url=raw["siteUrl"],
+        policy_version=raw["policyVersion"],
+        support=raw["support"],
+        operator=raw["operator"],
+    )

@@ -50,6 +50,28 @@ async def resources_for_service(
     return list((await session.execute(query)).scalars())
 
 
+async def active_resources(session: AsyncSession) -> list[tuple[Resource, list[str]]]:
+    """Активные ресурсы с услугами, которые они оказывают (порядок: sort_order, имя)."""
+    resources = list(
+        (
+            await session.execute(
+                select(Resource)
+                .where(Resource.is_active.is_(True))
+                .order_by(Resource.sort_order, Resource.name, Resource.id)
+            )
+        ).scalars()
+    )
+    rows = await session.execute(
+        select(ResourceService.resource_id, ResourceService.service_slug).order_by(
+            ResourceService.service_slug
+        )
+    )
+    slugs: dict[uuid.UUID, list[str]] = defaultdict(list)
+    for rid, slug in rows:
+        slugs[rid].append(slug)
+    return [(r, slugs.get(r.id, [])) for r in resources]
+
+
 async def load_weekly(session: AsyncSession, ids: Sequence[uuid.UUID]) -> dict[uuid.UUID, Weekly]:
     rows = await session.execute(
         select(

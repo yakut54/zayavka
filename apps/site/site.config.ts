@@ -87,4 +87,11 @@ export default defineSiteConfig({
   seo: { title: 'content.seo.title', description: 'content.seo.description' },
   analytics: { yandexMetrikaId: null },
   leadForm: { callbackMinutes: 15 },
+  max: {
+    bookingEnabled: false,
+    botUsername: 'example_bot',
+    miniAppUrl: 'https://max.example.ru',
+    supportContact: 'content.max.support',
+    operator: 'content.max.operator',
+  },
 })

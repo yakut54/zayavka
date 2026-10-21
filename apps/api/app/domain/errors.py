@@ -114,3 +114,18 @@ class HasFutureBookings(DomainError):
 
 class BookingNotFound(NotFound):
     detail = "Запись не найдена"
+
+
+class MaxInitDataMissing(Unauthenticated):
+    code = "max_init_data_missing"
+    detail = "Откройте приложение из чата MAX"
+
+
+class MaxInitDataInvalid(Unauthenticated):
+    code = "max_init_data_invalid"
+    detail = "Не удалось подтвердить пользователя MAX"
+
+
+class MaxInitDataExpired(Unauthenticated):
+    code = "max_init_data_expired"
+    detail = "Сессия устарела — перезапустите приложение из чата"

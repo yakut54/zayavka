@@ -509,6 +509,20 @@ class BookingService:
             }
         return [BookingResult(b, resources[b.resource_id], False) for b in bookings], total
 
+    async def policy(self) -> BookingSettings:
+        async with self._sessionmaker() as session:
+            return await repo.get_settings(session)
+
+    async def active_resources(self) -> list[tuple[Resource, list[str]]]:
+        """Активные ресурсы и их услуги, доступные для записи."""
+        async with self._sessionmaker() as session:
+            rows = await repo.active_resources(session)
+        bookable = {slug for slug, item in self._catalog.items() if item.bookable}
+        return [(r, [s for s in slugs if s in bookable]) for r, slugs in rows]
+
+    def now(self) -> datetime:
+        return self._clock()
+
     def change_deadline(self, booking: Booking, settings: BookingSettings) -> datetime:
         return booking.starts_at - timedelta(minutes=settings.cancel_deadline_min)
 
