@@ -149,6 +149,14 @@ test.describe('прочее', () => {
       if (m.type() === 'error' || m.type() === 'warning') problems.push(m.text())
     })
     page.on('pageerror', (e) => problems.push(e.message))
+    // подробности нарушений CSP: что именно заблокировано и где (в консоли браузера этого нет)
+    await page.addInitScript(() => {
+      document.addEventListener('securitypolicyviolation', (event) => {
+        console.error(
+          `CSP ${event.violatedDirective}: ${event.blockedURI} sample=${JSON.stringify(event.sample)} at ${event.sourceFile}:${event.lineNumber}`,
+        )
+      })
+    })
     await page.goto('/')
     await page.locator('input[name="name"]').waitFor()
     await page.getByRole('button', { name: 'Оставить заявку' }).first().click()

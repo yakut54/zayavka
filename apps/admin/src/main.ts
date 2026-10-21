@@ -5,11 +5,15 @@ import { useToast } from '@app/ui'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
+import { z } from 'zod'
 
 import App from './App.vue'
 import { createQueryClient } from './queryClient'
 import { createAppRouter } from './router'
 import { useUiStore } from './stores/ui'
+
+// zod по умолчанию проверяет eval через new Function — при строгом CSP это нарушение script-src
+z.config({ jitless: true })
 
 const pinia = createPinia()
 const toast = useToast()
