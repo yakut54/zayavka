@@ -8,7 +8,7 @@ dependencies = [
   "pydantic>=2",
   "pydantic-settings",
   "email-validator",
-  "sqlalchemy[asyncio]>=2",
+  "sqlalchemy[asyncio]>=2.1.5",
   "asyncpg",
   "alembic",
   "argon2-cffi",
