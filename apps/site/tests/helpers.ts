@@ -14,6 +14,8 @@ export function createTestRouter() {
 }
 
 /** Монтирует всё приложение на заданном маршруте (с роутером, i18n и head). */
+const HOME_SECTIONS = 6 // services, prices, process, faq, contacts, lead-form
+
 export async function mountApp(path = '/', root: Component = App) {
   const router = createTestRouter()
   const head = createHead()
@@ -24,8 +26,16 @@ export async function mountApp(path = '/', root: Component = App) {
     global: { plugins: [router, head, i18n] },
   })
   await flushPromises()
-  if (path === '/')
-    await vi.waitFor(() => expect(wrapper.find('input[name="name"]').exists()).toBe(true))
+  if (path === '/') {
+    // секции главной грузятся лениво: ждём все, иначе на медленной машине тест видит часть страницы
+    await vi.waitFor(
+      () => {
+        expect(wrapper.find('input[name="name"]').exists()).toBe(true)
+        expect(wrapper.findAll('section[id]')).toHaveLength(HOME_SECTIONS)
+      },
+      { timeout: 10_000 },
+    )
+  }
   return { wrapper, router, head }
 }
 

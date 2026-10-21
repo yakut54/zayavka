@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: 'happy-dom',
+    fileParallelism: false, // ленивые секции главной на медленном CI-раннере не успевают при параллельных файлах
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
     environmentOptions: { happyDOM: { settings: { handleDisabledFileLoadingAsSuccess: true } } },
     include: ['tests/**/*.test.ts', 'src/**/*.test.ts'],
     setupFiles: ['tests/setup.ts'],
