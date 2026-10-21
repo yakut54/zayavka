@@ -151,6 +151,35 @@ test.describe('прочее', () => {
     page.on('pageerror', (e) => problems.push(e.message))
     // подробности нарушений CSP: что именно заблокировано и где (в консоли браузера этого нет)
     await page.addInitScript(() => {
+      // кто меняет style: стек вызова каждой записи через CSSOM/атрибут (только для разбора нарушений)
+      const ops: string[] = []
+      ;(window as unknown as { __styleOps: string[] }).__styleOps = ops
+      const where = () => (new Error().stack ?? '').split(/\r?\n/).slice(2, 5).join(' | ')
+      const proto = CSSStyleDeclaration.prototype
+      for (const name of Object.getOwnPropertyNames(proto)) {
+        const descriptor = Object.getOwnPropertyDescriptor(proto, name)
+        if (!descriptor?.set || name === 'length') continue
+        const original = descriptor.set
+        Object.defineProperty(proto, name, {
+          ...descriptor,
+          set(value: string) {
+            ops.push(`set ${name}=${JSON.stringify(value)} ${where()}`)
+            original.call(this, value)
+          },
+        })
+      }
+      for (const method of ['setProperty', 'removeProperty'] as const) {
+        const original = proto[method] as (...args: string[]) => string
+        proto[method] = function (this: CSSStyleDeclaration, ...args: string[]) {
+          ops.push(`${method}(${args.join(',')}) ${where()}`)
+          return original.apply(this, args)
+        } as never
+      }
+      const setAttribute = Element.prototype.setAttribute
+      Element.prototype.setAttribute = function (this: Element, name: string, value: string) {
+        if (name.toLowerCase() === 'style') ops.push(`setAttribute(style) ${where()}`)
+        setAttribute.call(this, name, value)
+      }
       document.addEventListener('securitypolicyviolation', (event) => {
         console.error(
           `CSP ${event.violatedDirective}: ${event.blockedURI} sample=${JSON.stringify(event.sample)} at ${event.sourceFile}:${event.lineNumber}`,
@@ -161,6 +190,12 @@ test.describe('прочее', () => {
     await page.locator('input[name="name"]').waitFor()
     await page.getByRole('button', { name: 'Оставить заявку' }).first().click()
     await page.waitForLoadState('networkidle')
+    if (problems.length > 0) {
+      const ops = await page.evaluate(
+        () => (window as unknown as { __styleOps: string[] }).__styleOps,
+      )
+      problems.push(...ops.slice(-12).map((op) => `STYLE-OP ${op}`))
+    }
     expect(problems).toEqual([])
   })
 
