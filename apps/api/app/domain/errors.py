@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass(frozen=True, slots=True)
@@ -14,10 +15,11 @@ class DomainError(Exception):
     code = "internal_error"
     detail = "Внутренняя ошибка"
 
-    def __init__(self, detail: str | None = None) -> None:
+    def __init__(self, detail: str | None = None, *, extra: dict[str, Any] | None = None) -> None:
         super().__init__(detail or self.detail)
         if detail is not None:
             self.detail = detail
+        self.extra: dict[str, Any] = extra or {}
 
 
 class BadRequest(DomainError):
@@ -72,3 +74,43 @@ class RateLimited(DomainError):
     def __init__(self, retry_after: int) -> None:
         super().__init__()
         self.retry_after = retry_after
+
+
+class NotOwner(DomainError):
+    status = 403
+    code = "not_owner"
+    detail = "Это чужая запись"
+
+
+class SlotTaken(DomainError):
+    status = 409
+    code = "slot_taken"
+    detail = "Это время уже занято"
+
+
+class TooLateToChange(DomainError):
+    status = 409
+    code = "too_late_to_change"
+    detail = "Отменить или перенести запись можно только по телефону"
+
+
+class BookingNotActive(DomainError):
+    status = 409
+    code = "booking_not_active"
+    detail = "Запись уже отменена или завершена"
+
+
+class ConflictsWithBookings(DomainError):
+    status = 409
+    code = "conflicts_with_bookings"
+    detail = "Изменение графика задевает существующие записи"
+
+
+class HasFutureBookings(DomainError):
+    status = 409
+    code = "has_future_bookings"
+    detail = "У сотрудника есть будущие записи"
+
+
+class BookingNotFound(NotFound):
+    detail = "Запись не найдена"

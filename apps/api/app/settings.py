@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     lead_retention_days: int = 365
     rate_limit_leads: str = "5/600"
     rate_limit_login: str = "10/900"
+    rate_limit_booking: str = "10/600"
     smtp_host: str | None = None
     smtp_port: int = 465
     smtp_user: str | None = None

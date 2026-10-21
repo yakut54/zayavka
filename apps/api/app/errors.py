@@ -39,6 +39,7 @@ def problem_response(
     detail: str,
     errors: list[FieldError] | None = None,
     headers: dict[str, str] | None = None,
+    extra: dict[str, Any] | None = None,
 ) -> JSONResponse:
     base = getattr(request.app.state, "problem_base", "")
     body: dict[str, Any] = {
@@ -49,6 +50,8 @@ def problem_response(
         "detail": detail,
         "request_id": request_id_of(request),
     }
+    if extra:
+        body.update(extra)
     if errors is not None:
         body["errors"] = [{"field": e.field, "code": e.code} for e in errors]
     response_headers = dict(headers or {})
@@ -83,6 +86,7 @@ async def domain_error_handler(request: Request, exc: Exception) -> JSONResponse
         detail=exc.detail,
         errors=errors,
         headers=headers,
+        extra=exc.extra,
     )
 
 
