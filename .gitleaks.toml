@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "тестовые значения окружений и примеры"
+paths = ['''\.env\.example''', '''infra/compose\.test\.yml''', '''e2e/''', '''docs/''']

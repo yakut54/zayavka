@@ -1,0 +1,107 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: apps/api } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy --strict app
+      - run: uv run pytest --cov=app --cov-fail-under=90
+      - run: uv run pip-audit
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm -r --if-present typecheck
+      - run: pnpm -r --if-present test
+      - run: pnpm i18n:check
+      - run: pnpm --filter @app/site build && pnpm --filter @app/site budget
+      - run: pnpm --filter @app/admin build
+      - run: pnpm audit --prod
+
+  storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @app/ui exec playwright install --with-deps chromium
+      - run: pnpm --filter @app/ui build-storybook
+      - run: pnpm --filter @app/ui test-storybook:ci
+
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @app/site build && pnpm --filter @app/admin build
+      - run: docker compose -p zayavka-test -f infra/compose.test.yml up -d --build --wait
+      - run: docker compose -p zayavka-test -f infra/compose.test.yml exec -T api python -m app.cli create-admin --email contract@example.ru --stdin <<< 'contract-pass-123'
+      - run: API_URL_FROM_DOCKER=http://172.17.0.1:8080 API_URL=http://localhost:8080 scripts/contract.sh
+      - if: always()
+        run: docker compose -p zayavka-test -f infra/compose.test.yml down -v
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @app/e2e exec playwright install --with-deps chromium webkit
+      - run: pnpm --filter @app/site build && pnpm --filter @app/admin build
+      - run: docker compose -p zayavka-test -f infra/compose.test.yml up -d --build --wait
+      - run: pnpm e2e
+        env: { CI: 'true', E2E_WEBKIT: '1' }
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with: { name: e2e-report, path: "e2e/playwright-report\ne2e/test-results" }
+      - if: always()
+        run: docker compose -p zayavka-test -f infra/compose.test.yml down -v
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @app/site build && pnpm --filter @app/admin build
+      - run: docker compose -p zayavka-test -f infra/compose.test.yml up -d --build --wait
+      - run: pnpm exec lhci autorun
+      - if: always()
+        run: docker compose -p zayavka-test -f infra/compose.test.yml down -v
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }

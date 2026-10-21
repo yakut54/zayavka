@@ -76,7 +76,7 @@ export function csrfMiddleware(getCookies: () => string): Middleware {
 }
 
 export async function toApiError(response: Response): Promise<ApiError> {
-  let body: Partial<Problem> | null = null
+  let body: Partial<Problem> | null
   try {
     body = (await response.clone().json()) as Partial<Problem>
   } catch {

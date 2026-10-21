@@ -52,3 +52,5 @@ White-label лендинг с приёмом заявок и админкой. �
 - [x] M5 API админки (`make openapi` — схема и типизированный клиент `packages/api-client`)
 - [x] M6 дизайн-система (`packages/ui`, `packages/i18n`)
 - [x] M7 публичный сайт (`apps/site`, e2e: `pnpm e2e`, Lighthouse: `pnpm exec lhci autorun`)
+- [x] M8 админка (`apps/admin`)
+- [x] M9 качество (CI, Dependabot, gitleaks)
