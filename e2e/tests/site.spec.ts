@@ -182,15 +182,21 @@ test.describe('прочее', () => {
       }
       document.addEventListener('securitypolicyviolation', (event) => {
         console.error(
-          `CSP ${event.violatedDirective}: ${event.blockedURI} sample=${JSON.stringify(event.sample)} at ${event.sourceFile}:${event.lineNumber}`,
+          `CSP ${event.violatedDirective}: ${event.blockedURI} sample=${JSON.stringify(event.sample)} at ${event.sourceFile}:${event.lineNumber} target=${(event.target as Element | null)?.outerHTML?.slice(0, 160) ?? String(event.target)}`,
         )
       })
     })
     await page.goto('/')
     await page.locator('input[name="name"]').waitFor()
+    const beforeClick = problems.length
     await page.getByRole('button', { name: 'Оставить заявку' }).first().click()
     await page.waitForLoadState('networkidle')
     if (problems.length > 0) {
+      problems.push(`PHASE: до клика было ${beforeClick} сообщений`)
+      const styled = await page.evaluate(() =>
+        [...document.querySelectorAll('[style]')].map((el) => el.outerHTML.slice(0, 160)),
+      )
+      problems.push(...styled.map((html) => `STYLED-ELEMENT ${html}`))
       const ops = await page.evaluate(
         () => (window as unknown as { __styleOps: string[] }).__styleOps,
       )

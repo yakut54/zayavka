@@ -28,6 +28,7 @@ from app.services.admin_leads import AdminLeadService, export_filename
 from app.settings import Settings
 
 ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+MIN_YEAR, MAX_YEAR = 1970, 2200  # за пределами перевод в UTC и в метку времени ломается
 
 
 def _safe_q(value: str | None) -> str | None:
@@ -57,7 +58,11 @@ Service = Annotated[AdminLeadService, Depends(get_service)]
 
 def _iso_date_only(value: object) -> object:
     """Только YYYY-MM-DD: pydantic иначе принял бы число как unix-время (`date_to=0`)."""
-    if isinstance(value, str) and ISO_DATE.fullmatch(value):
+    if (
+        isinstance(value, str)
+        and ISO_DATE.fullmatch(value)
+        and MIN_YEAR <= int(value[:4]) <= MAX_YEAR
+    ):
         return value
     raise ValueError("expected YYYY-MM-DD")
 
