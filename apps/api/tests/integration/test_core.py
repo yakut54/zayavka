@@ -239,6 +239,14 @@ async def test_migrations_up_down_up(empty_engine: AsyncEngine) -> None:
         "lead_events",
         "notification_outbox",
         "rate_limits",
+        "resources",
+        "resource_services",
+        "working_hours",
+        "schedule_exceptions",
+        "booking_settings",
+        "bookings",
+        "booking_events",
+        "max_updates",
     }
     for fn, rev in (("upgrade", "head"), ("downgrade", "base"), ("upgrade", "head")):
         async with empty_engine.begin() as conn:

@@ -21,7 +21,8 @@ from app.settings import Settings
 
 PG_IMAGE = "postgres:18"
 TABLES = (
-    "rate_limits, notification_outbox, lead_events, leads, consents, admin_sessions, admin_users"
+    "rate_limits, notification_outbox, lead_events, leads, consents, admin_sessions, admin_users,"
+    " resources, bookings, booking_events, booking_settings, max_updates"
 )
 
 
@@ -77,6 +78,7 @@ async def clean_db(request: pytest.FixtureRequest) -> AsyncIterator[None]:
         eng: AsyncEngine = request.getfixturevalue("engine")
         async with eng.begin() as conn:
             await conn.execute(text(f"TRUNCATE {TABLES} RESTART IDENTITY CASCADE"))
+            await conn.execute(text("INSERT INTO booking_settings (id) VALUES (1)"))
 
 
 @pytest.fixture

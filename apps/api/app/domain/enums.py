@@ -32,3 +32,26 @@ class OutboxStatus(StrEnum):
     SENT = "sent"
     FAILED = "failed"
     CANCELLED = "cancelled"
+
+
+class BookingStatus(StrEnum):
+    CONFIRMED = "confirmed"
+    CANCELLED_BY_CLIENT = "cancelled_by_client"
+    CANCELLED_BY_BUSINESS = "cancelled_by_business"
+    COMPLETED = "completed"
+    NO_SHOW = "no_show"
+    RESCHEDULED = "rescheduled"
+
+
+class BookingEventType(StrEnum):
+    CREATED = "created"
+    CANCELLED = "cancelled"
+    RESCHEDULED = "rescheduled"
+    STATUS_CHANGED = "status_changed"
+    NOTE_ADDED = "note_added"
+
+
+class BookingActor(StrEnum):
+    CLIENT = "client"
+    ADMIN = "admin"
+    SYSTEM = "system"
