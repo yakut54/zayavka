@@ -21,8 +21,18 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "pytest", "pytest-asyncio", "pytest-cov", "httpx", "testcontainers[postgres]",
-  "polyfactory", "time-machine", "ruff", "mypy", "schemathesis", "pip-audit",
+  "pytest",
+  "pytest-asyncio",
+  "pytest-cov",
+  "httpx",
+  "testcontainers[postgres]",
+  "polyfactory",
+  "time-machine",
+  "ruff",
+  "mypy",
+  "schemathesis",
+  "pip-audit",
+  "hypothesis>=6.170.5",
 ]
 
 [tool.ruff]
