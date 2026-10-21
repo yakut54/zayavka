@@ -1,0 +1,7 @@
+{% if b.rescheduled %}Запись № {{ b.public_number }} (перенос)
+{% else %}Новая запись № {{ b.public_number }}
+{% endif %}{{ b.service_title }} — {{ b.starts_at | date_long }}, {{ b.starts_at | hm }}–{{ b.ends_at | hm }}
+Специалист: {{ b.resource_name }}
+Клиент: {{ b.client_name }}, {{ b.client_phone }}
+{% if b.comment %}Комментарий: {{ b.comment | clip(300) }}
+{% endif %}{{ b.admin_url }}

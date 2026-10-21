@@ -28,6 +28,7 @@ export function buildServicesJson(config: SiteConfig, dictionary: Dictionary): s
       policyVersion: config.policyVersion,
       support: lookup(dictionary, config.max.supportContact),
       operator: lookup(dictionary, config.max.operator),
+      botUsername: config.max.botUsername,
     },
     services: config.services.map((s) => ({
       slug: s.slug,

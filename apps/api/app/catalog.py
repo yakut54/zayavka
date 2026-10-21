@@ -44,6 +44,7 @@ class Business:
     policy_version: str
     support: str
     operator: str
+    bot_username: str
 
 
 def load_business(path: Path) -> Business:
@@ -58,4 +59,5 @@ def load_business(path: Path) -> Business:
         policy_version=raw["policyVersion"],
         support=raw["support"],
         operator=raw["operator"],
+        bot_username=raw["botUsername"],
     )

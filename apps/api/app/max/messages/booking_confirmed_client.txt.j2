@@ -1,0 +1,7 @@
+Вы записаны ✅
+{{ b.service_title }}, {{ b.starts_at | date_long }}, {{ b.starts_at | hm }}–{{ b.ends_at | hm }}
+Специалист: {{ b.resource_name }}
+Адрес: {{ b.business_address }}
+{% if b.can_change %}Отменить или перенести можно до {{ b.change_until | hm }} {{ b.change_until | date_short }} — кнопка «Мои записи».
+{% else %}Отменить или перенести запись можно по телефону {{ b.business_phone }}.
+{% endif %}

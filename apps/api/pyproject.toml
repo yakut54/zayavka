@@ -17,6 +17,7 @@ dependencies = [
   "jinja2",
   "structlog",
   "httpx>=0.28.1",
+  "babel>=2.18.0",
 ]
 
 [dependency-groups]
@@ -33,6 +34,7 @@ dev = [
   "schemathesis",
   "pip-audit",
   "hypothesis>=6.170.5",
+  "respx>=0.23.1",
 ]
 
 [tool.ruff]

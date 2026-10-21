@@ -1,0 +1,4 @@
+Запись отменена ❌
+{{ b.service_title }}, {{ b.starts_at | date_long }}, {{ b.starts_at | hm }}
+{% if b.cancel_reason %}Причина: {{ b.cancel_reason }}
+{% endif %}Записаться снова можно в любой момент — кнопка «Мои записи». Вопросы — по телефону {{ b.business_phone }}.

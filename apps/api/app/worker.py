@@ -6,10 +6,13 @@ from dataclasses import asdict
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from app.catalog import load_business
 from app.db import create_engine, create_sessionmaker
 from app.logging import configure_logging, get_logger
+from app.max.client import MaxClient
 from app.notifications import build_channels
 from app.notifications.base import Channel
+from app.notifications.booking import BookingDispatcher
 from app.services.maintenance import MaintenanceResult, run_maintenance
 from app.services.notifications import load_service_titles, process_batch
 from app.settings import Settings, get_settings
@@ -24,6 +27,7 @@ async def run_worker(
     *,
     sessionmaker: async_sessionmaker[AsyncSession] | None = None,
     channels: dict[str, Channel] | None = None,
+    dispatcher: BookingDispatcher | None = None,
     idle_sleep_s: float = IDLE_SLEEP_S,
 ) -> None:
     """Цикл обработки outbox. По stop дорабатывает текущую пачку и выходит."""
@@ -36,8 +40,23 @@ async def run_worker(
         titles = load_service_titles(settings.services_file)
     except OSError:
         titles = {}
+    max_client: MaxClient | None = None
+    if dispatcher is None:
+        try:
+            business = load_business(settings.services_file)
+        except OSError, KeyError:
+            business = None
+        if business is not None:
+            token = settings.max_bot_token
+            if token is not None:
+                max_client = MaxClient(
+                    settings.max_api_base,
+                    token.get_secret_value(),
+                    ca_bundle=settings.max_ca_bundle,
+                )
+            dispatcher = BookingDispatcher(settings, business, channels, max_client=max_client)
     log = get_logger()
-    log.info("worker_started", channels=sorted(channels))
+    log.info("worker_started", channels=sorted(channels), max_user=max_client is not None)
     last_maintenance = float("-inf")
     try:
         while not stop.is_set():
@@ -52,13 +71,17 @@ async def run_worker(
             processed = 0
             try:
                 async with sessionmaker() as session:
-                    processed = await process_batch(session, channels, titles)
+                    processed = await process_batch(
+                        session, channels, titles, dispatcher=dispatcher
+                    )
             except Exception:
                 log.exception("batch_failed")
             if processed == 0:
                 with contextlib.suppress(TimeoutError):
                     await asyncio.wait_for(stop.wait(), timeout=idle_sleep_s)
     finally:
+        if max_client is not None:
+            await max_client.aclose()
         if engine is not None:
             await engine.dispose()
         log.info("worker_stopped")

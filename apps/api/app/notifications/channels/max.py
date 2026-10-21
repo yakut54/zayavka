@@ -1,6 +1,7 @@
 import httpx
 
 from app.notifications.base import LeadView
+from app.notifications.booking import BookingMessage
 
 # Документация: https://dev.max.ru/docs-api/methods/POST/messages
 # Токен передаётся «как есть» в заголовке Authorization; лимит — 2 сообщения/с на чат.
@@ -44,5 +45,21 @@ class MaxChannel:
             params={"chat_id": self._chat_id},
             headers={"Authorization": self._token},
             json={"text": self.build_text(lead)},
+        )
+        response.raise_for_status()
+
+    async def send_booking_owner(self, kind: str, message: BookingMessage, text: str) -> None:
+        if self._client is not None:
+            await self._post_text(self._client, text)
+        else:
+            async with httpx.AsyncClient(timeout=10) as client:
+                await self._post_text(client, text)
+
+    async def _post_text(self, client: httpx.AsyncClient, text: str) -> None:
+        response = await client.post(
+            MAX_API_URL,
+            params={"chat_id": self._chat_id},
+            headers={"Authorization": self._token},
+            json={"text": text[:4000]},
         )
         response.raise_for_status()

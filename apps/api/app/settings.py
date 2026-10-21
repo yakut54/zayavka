@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     max_init_data_ttl_hours: int = 24
     max_demo_bridge: bool = False
     max_demo_bot_token: SecretStr | None = None
+    max_ca_bundle: Path | None = None
+    max_webhook_url: str | None = None
     smartcaptcha_server_key: SecretStr | None = None
     log_level: str = "INFO"
     services_file: Path = Path(__file__).parent.parent / "services.json"

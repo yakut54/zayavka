@@ -11,7 +11,7 @@ from app.errors import install_error_handlers
 from app.logging import configure_logging
 from app.max.auth import MaxAuthenticator
 from app.middleware import AccessLogMiddleware, RequestIdMiddleware
-from app.routes import admin_auth, admin_leads, health, max_app, public_leads
+from app.routes import admin_auth, admin_leads, health, max_app, max_webhook, public_leads
 from app.services.notifications import load_service_titles
 from app.settings import Settings, get_settings
 
@@ -60,4 +60,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(admin_auth.router, prefix=API_PREFIX)
     app.include_router(admin_leads.router, prefix=API_PREFIX)
     app.include_router(max_app.router, prefix=API_PREFIX)
+    app.include_router(max_webhook.router, prefix=API_PREFIX)
     return app

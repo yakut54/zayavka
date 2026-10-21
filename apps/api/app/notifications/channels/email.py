@@ -5,6 +5,7 @@ import aiosmtplib
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, select_autoescape
 
 from app.notifications.base import LeadView
+from app.notifications.booking import BookingMessage
 from app.settings import Settings
 
 TEMPLATES = Path(__file__).parent.parent / "templates"
@@ -39,11 +40,26 @@ class EmailChannel:
         )
         return message
 
+    def build_booking_message(self, kind: str, booking: BookingMessage, text: str) -> EmailMessage:
+        subject = "Отмена записи" if kind == "booking_cancelled_owner" else "Новая запись"
+        message = EmailMessage()
+        message["Subject"] = f"{subject} № {booking.public_number}"
+        message["From"] = self._s.smtp_from or "noreply@localhost"
+        message["To"] = ", ".join(self._s.notify_emails)
+        message.set_content(text)
+        return message
+
+    async def send_booking_owner(self, kind: str, message: BookingMessage, text: str) -> None:
+        await self._send(self.build_booking_message(kind, message, text))
+
     async def send_lead_created(self, lead: LeadView) -> None:
+        await self._send(self.build_message(lead))
+
+    async def _send(self, message: EmailMessage) -> None:
         s = self._s
         password = s.smtp_password.get_secret_value() if s.smtp_password else None
         await aiosmtplib.send(
-            self.build_message(lead),
+            message,
             hostname=s.smtp_host,
             port=s.smtp_port,
             username=s.smtp_user,
