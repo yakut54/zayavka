@@ -53,7 +53,8 @@
       "email_invalid": "Проверьте адрес электронной почты",
       "consent_required": "Нужно согласие на обработку данных",
       "unknown_service": "Выберите услугу из списка",
-      "wrong_password": "Неверный пароль"
+      "wrong_password": "Неверный пароль",
+      "password_mismatch": "Пароли не совпадают"
     },
     "api": {
       "bad_request": "Некорректный запрос",
@@ -290,5 +291,109 @@
     "confirm": "Подтвердить",
     "dialogText": "Действие нельзя будет отменить",
     "menu": "Меню"
+  },
+  "status": {
+    "new": "Новая",
+    "in_progress": "В работе",
+    "done": "Выполнена",
+    "spam": "Спам",
+    "archived": "В архиве"
+  },
+  "admin": {
+    "nav": {
+      "leads": "Заявки",
+      "account": "Аккаунт",
+      "menu": "Меню",
+      "mainNav": "Основная навигация",
+      "skipToContent": "Перейти к содержимому"
+    },
+    "shell": {
+      "logout": "Выйти",
+      "themeToLight": "Включить светлую тему",
+      "themeToDark": "Включить тёмную тему",
+      "newLeads": "Новых: {count}"
+    },
+    "login": {
+      "title": "Вход в админку",
+      "email": "Электронная почта",
+      "password": "Пароль",
+      "submit": "Войти",
+      "invalid": "Неверный email или пароль"
+    },
+    "auth": {
+      "sessionExpired": "Сессия истекла, войдите снова"
+    },
+    "leads": {
+      "title": "Заявки",
+      "search": "Поиск по имени, телефону или номеру",
+      "status": "Статус",
+      "statusAll": "Все",
+      "dateFrom": "С",
+      "dateTo": "По",
+      "dateRangeError": "Дата «по» не может быть раньше даты «с»",
+      "reset": "Сбросить фильтры",
+      "export": "Скачать CSV",
+      "exportFailed": "Не удалось скачать файл",
+      "caption": "Список заявок",
+      "columns": {
+        "number": "№",
+        "date": "Дата",
+        "name": "Имя",
+        "phone": "Телефон",
+        "service": "Услуга",
+        "status": "Статус"
+      },
+      "empty": "Заявок пока нет",
+      "emptyHint": "Как только кто-то оставит заявку на сайте, она появится здесь",
+      "notFound": "Ничего не найдено",
+      "notFoundHint": "Измените условия поиска или сбросьте фильтры",
+      "copyPhone": "Скопировать телефон",
+      "phoneCopied": "Телефон скопирован",
+      "copyFailed": "Не удалось скопировать",
+      "noService": "—",
+      "count": "нет заявок | {n} заявка | {n} заявки | {n} заявок"
+    },
+    "lead": {
+      "title": "Заявка № {number}",
+      "created": "Создана {date}",
+      "contact": "Контакт",
+      "name": "Имя",
+      "phone": "Телефон",
+      "call": "Позвонить",
+      "email": "Email",
+      "write": "Написать",
+      "service": "Услуга",
+      "message": "Сообщение",
+      "status": "Статус",
+      "statusChanged": "Статус изменён",
+      "spamTitle": "Отметить как спам?",
+      "spamText": "Заявка получит статус «Спам». Это можно изменить позже.",
+      "spamConfirm": "Отметить",
+      "notes": "Заметки",
+      "noteLabel": "Добавьте заметку",
+      "noteAdd": "Добавить заметку",
+      "noteAdded": "Заметка добавлена",
+      "noteHint": "Ctrl+Enter — отправить",
+      "history": "История",
+      "historyCreated": "Заявка создана",
+      "historyStatus": "Статус: {from} → {to}",
+      "historySystem": "Система",
+      "anonymized": "Данные обезличены по сроку хранения"
+    },
+    "account": {
+      "title": "Аккаунт",
+      "changePassword": "Смена пароля",
+      "currentPassword": "Текущий пароль",
+      "newPassword": "Новый пароль",
+      "newPasswordConfirm": "Повторите новый пароль",
+      "passwordLength": "{count} из {min} символов",
+      "submit": "Сменить пароль",
+      "changed": "Пароль изменён. Остальные сеансы завершены",
+      "security": "Безопасность",
+      "revokeAll": "Выйти на всех устройствах",
+      "revokeTitle": "Выйти на всех устройствах?",
+      "revokeText": "Все сеансы, включая этот, будут завершены. Потребуется войти заново.",
+      "revokeConfirm": "Выйти везде"
+    }
   }
 }

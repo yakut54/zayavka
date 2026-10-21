@@ -13,6 +13,7 @@ export const FIELD_ERROR_CODES = [
   'consent_required',
   'unknown_service',
   'wrong_password',
+  'password_mismatch',
 ] as const
 
 export type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number]

@@ -41,7 +41,7 @@ const files = SOURCE_DIRS.flatMap((dir) => [...walk(join(root, dir))]).filter((f
   /\.(vue|ts|json)$/.test(f),
 )
 
-const literal = /(['"`])((?:[a-z][A-Za-z0-9]*)(?:\.[A-Za-z0-9_]+)+\.?)(\1|\$\{)/g
+const literal = /(['"`])((?:[a-z][A-Za-z0-9]*)(?:\.[A-Za-z0-9_]+)*\.?)(\1|\$\{)/g
 const used = new Set()
 const prefixes = new Set() // динамические ключи вида `errors.field.${code}` и ссылки на неймспейс
 const unknown = []
@@ -50,6 +50,7 @@ for (const file of files) {
   const text = readFileSync(file, 'utf8')
   for (const match of text.matchAll(literal)) {
     const candidate = match[2]
+    if (!candidate.includes('.')) continue
     if (!namespaces.has(candidate.split('.')[0])) continue
     if (candidate.endsWith('.') || match[3] === '${') {
       prefixes.add(candidate)

@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/vue'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, nextTick, ref } from 'vue'
 
 import { expectAccessible, renderWithApp } from '../../tests/helpers'
 import Checkbox from './Checkbox/Checkbox.vue'
@@ -272,6 +272,14 @@ describe('Select', () => {
     await fireEvent.blur(select)
     expect(emitted()['update:modelValue']).toEqual([['b']])
     expect(emitted().blur).toHaveLength(1)
+  })
+
+  it('если родитель не принял значение, select возвращается к текущему', async () => {
+    renderWithApp(Select, { props: { options: [...options], modelValue: 'a' } })
+    const select = screen.getByRole('combobox') as HTMLSelectElement
+    await fireEvent.update(select, 'b')
+    await nextTick()
+    expect(select.value).toBe('a')
   })
 
   it('invalid и disabled; атрибуты на select', async () => {

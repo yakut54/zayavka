@@ -11,7 +11,7 @@ import LeadForm from '../src/features/lead-form/LeadForm.vue'
 import { createTestRouter, expectAccessible } from './helpers'
 
 vi.mock('../src/features/lead-form/api', async (importOriginal) => ({
-  ...(await importOriginal<ApiModule>()),
+  ...(await importOriginal<typeof ApiModule>()),
   submitLead: vi.fn(),
 }))
 

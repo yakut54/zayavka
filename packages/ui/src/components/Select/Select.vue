@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { MessageKey } from '@app/i18n'
 
+import { nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useSplitAttrs } from '../../composables/useSplitAttrs'
@@ -13,7 +14,7 @@ export interface SelectOption {
   label: MessageKey
 }
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue?: string
     options: SelectOption[]
@@ -27,6 +28,18 @@ withDefaults(
 )
 
 const emit = defineEmits<{ 'update:modelValue': [value: string]; blur: [event: FocusEvent] }>()
+
+/**
+ * Контролируемый элемент: если родитель не принял новое значение (например, ждёт подтверждения),
+ * нативный select возвращается к текущему, а не остаётся показывать выбранное пользователем.
+ */
+function onChange(event: Event): void {
+  const el = event.target as HTMLSelectElement
+  emit('update:modelValue', el.value)
+  void nextTick(() => {
+    if (el.value !== props.modelValue) el.value = props.modelValue
+  })
+}
 
 const { t } = useI18n()
 const { rootAttrs, innerAttrs: selectAttrs } = useSplitAttrs()
@@ -44,7 +57,7 @@ const { rootAttrs, innerAttrs: selectAttrs } = useSplitAttrs()
       :disabled="disabled"
       :aria-invalid="invalid ? 'true' : undefined"
       v-bind="selectAttrs"
-      @change="emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
+      @change="onChange"
       @blur="emit('blur', $event)"
     >
       <option v-if="placeholder" value="">{{ t(placeholder) }}</option>

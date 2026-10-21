@@ -1,0 +1,15 @@
+{
+  "extends": "@app/config/tsconfig.vue.json",
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "paths": { "@/*": ["./src/*"] }
+  },
+  "include": [
+    "src/**/*",
+    "src/**/*.vue",
+    "tests/**/*",
+    "admin.config.ts",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ]
+}
