@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b63c4"/>
+      <stop offset="1" stop-color="#1f3a85"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1010" cy="315" r="230" fill="#ffffff" opacity=".1"/>
+  <path d="M1090 190a110 110 0 0 0-149 139L790 480v140h140l151-150a110 110 0 0 0 139-149l-72 72-61-17-17-61z" fill="#fff" transform="translate(-170 -180) scale(.95)"/>
+  <text x="80" y="300" font-family="Arial, Helvetica, sans-serif" font-size="96" font-weight="700" fill="#fff">Гараж 24</text>
+  <text x="80" y="380" font-family="Arial, Helvetica, sans-serif" font-size="40" fill="#dbe7ff">Ремонт и обслуживание авто</text>
+  <text x="80" y="560" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#ffd27a">Демо-проект</text>
+</svg>

@@ -563,7 +563,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -574,7 +578,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -585,7 +593,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Неверный CSRF-токен"
           },
@@ -596,7 +608,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           },
@@ -607,7 +623,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Превышен лимит"
           }
@@ -632,7 +652,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -643,7 +667,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -654,7 +682,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Неверный CSRF-токен"
           },
@@ -665,7 +697,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           },
@@ -676,7 +712,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Превышен лимит"
           }
@@ -708,7 +748,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -719,7 +763,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -730,7 +778,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Неверный CSRF-токен"
           },
@@ -741,7 +793,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           },
@@ -752,7 +808,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Превышен лимит"
           }
@@ -787,7 +847,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -798,7 +862,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -809,7 +877,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Неверный CSRF-токен"
           },
@@ -820,7 +892,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           },
@@ -831,7 +907,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Превышен лимит"
           }
@@ -856,7 +936,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -867,7 +951,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -878,7 +966,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Неверный CSRF-токен"
           },
@@ -889,7 +981,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           },
@@ -900,7 +996,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Превышен лимит"
           }
@@ -1041,7 +1141,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -1052,7 +1156,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -1063,7 +1171,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           }
@@ -1157,7 +1269,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -1168,7 +1284,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -1179,7 +1299,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           }
@@ -1223,7 +1347,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -1234,7 +1362,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -1245,7 +1377,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Не найдено"
           },
@@ -1256,7 +1392,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           }
@@ -1308,7 +1448,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -1319,7 +1463,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -1330,7 +1478,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Неверный CSRF-токен"
           },
@@ -1341,7 +1493,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Не найдено"
           },
@@ -1352,7 +1508,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Конфликт версий"
           },
@@ -1363,7 +1523,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           }
@@ -1417,7 +1581,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -1428,7 +1596,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Нет сессии или истекла"
           },
@@ -1439,7 +1611,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Неверный CSRF-токен"
           },
@@ -1450,7 +1626,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Не найдено"
           },
@@ -1461,7 +1641,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           }
@@ -1528,7 +1712,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Некорректный запрос"
           },
@@ -1539,7 +1727,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Ошибки валидации"
           },
@@ -1550,7 +1742,11 @@
                   "$ref": "#/components/schemas/Problem"
                 }
               },
-              "application/problem+json": {}
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
             },
             "description": "Превышен лимит"
           }

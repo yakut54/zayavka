@@ -1,5 +1,10 @@
 {
-  "slugs": ["diagnostics", "maintenance", "brakes", "tires"],
+  "slugs": [
+    "diagnostics",
+    "maintenance",
+    "brakes",
+    "tires"
+  ],
   "titles": {
     "diagnostics": "Компьютерная диагностика",
     "maintenance": "Техобслуживание",

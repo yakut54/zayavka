@@ -52,7 +52,7 @@ for (const file of files) {
     const candidate = match[2]
     if (!namespaces.has(candidate.split('.')[0])) continue
     if (candidate.endsWith('.') || match[3] === '${') {
-      prefixes.add(candidate.endsWith('.') ? candidate : `${candidate}.`)
+      prefixes.add(candidate)
     } else if (keys.has(candidate)) {
       used.add(candidate)
     } else if ([...keys].some((k) => k.startsWith(`${candidate}.`))) {

@@ -13,3 +13,6 @@ storybook-static/
 .claude/
 CLAUDE.md
 .coverage
+apps/site/src/assets/generated/
+apps/site/public/generated/
+.lighthouseci/

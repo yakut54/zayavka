@@ -76,7 +76,24 @@ export function createConfig({ ignores = [] } = {}) {
         'vue/require-explicit-emits': 'error',
         'vue/component-api-style': ['error', ['script-setup']],
         'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
-        'vue/no-bare-strings-in-template': ['error', { allowlist: SYMBOLS }],
+        'vue/no-bare-strings-in-template': [
+          'error',
+          {
+            allowlist: SYMBOLS,
+            // Пропсы компонентов (title="key") — это ключи словаря; проверяются только нативные элементы.
+            attributes: {
+              '/^[a-z][a-z0-9]*$/': [
+                'title',
+                'aria-label',
+                'aria-placeholder',
+                'aria-roledescription',
+                'aria-valuetext',
+              ],
+              input: ['placeholder'],
+              img: ['alt'],
+            },
+          },
+        ],
         '@typescript-eslint/consistent-type-imports': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
@@ -87,7 +104,13 @@ export function createConfig({ ignores = [] } = {}) {
           {
             patterns: [
               {
-                group: ['@app/ui/*', '**/packages/ui/src/**'],
+                group: [
+                  '@app/ui/*',
+                  '!@app/ui/styles.css',
+                  '!@app/ui/contrast',
+                  '!@app/ui/icons',
+                  '**/packages/ui/src/**',
+                ],
                 message: 'Импортируйте UI только из публичного индекса @app/ui.',
               },
             ],

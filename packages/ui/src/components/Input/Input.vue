@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { MessageKey } from '@app/i18n'
-import { computed, ref, useAttrs } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { useSplitAttrs } from '../../composables/useSplitAttrs'
 import Icon from '../Icon/Icon.vue'
 import type { IconName } from '../Icon/icons'
 import IconButton from '../IconButton/IconButton.vue'
@@ -38,14 +39,9 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const attrs = useAttrs()
 const inputEl = ref<HTMLInputElement | null>(null)
 
-const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }))
-const inputAttrs = computed(() => {
-  const { class: _class, style: _style, ...rest } = attrs
-  return rest
-})
+const { rootAttrs, innerAttrs: inputAttrs } = useSplitAttrs()
 const showClear = computed(
   () => props.clearable && props.modelValue !== '' && !props.disabled && !props.readonly,
 )

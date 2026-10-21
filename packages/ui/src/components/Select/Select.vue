@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { MessageKey } from '@app/i18n'
-import { computed, useAttrs } from 'vue'
+
 import { useI18n } from 'vue-i18n'
 
+import { useSplitAttrs } from '../../composables/useSplitAttrs'
 import Icon from '../Icon/Icon.vue'
 
 defineOptions({ inheritAttrs: false })
@@ -28,12 +29,7 @@ withDefaults(
 const emit = defineEmits<{ 'update:modelValue': [value: string]; blur: [event: FocusEvent] }>()
 
 const { t } = useI18n()
-const attrs = useAttrs()
-const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }))
-const selectAttrs = computed(() => {
-  const { class: _class, style: _style, ...rest } = attrs
-  return rest
-})
+const { rootAttrs, innerAttrs: selectAttrs } = useSplitAttrs()
 </script>
 
 <template>

@@ -49,9 +49,12 @@ const classes = computed(() => [
 </script>
 
 <template>
-  <component :is="as" :class="classes" :style="lines ? { '--ui-text-lines': lines } : undefined">{{
-    content
-  }}</component>
+  <component
+    :is="as"
+    :class="classes"
+    v-bind="lines ? { style: { '--ui-text-lines': lines } } : {}"
+    >{{ content }}</component
+  >
 </template>
 
 <style scoped>

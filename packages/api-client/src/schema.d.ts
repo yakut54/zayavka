@@ -442,7 +442,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -452,7 +452,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Неверный CSRF-токен */
@@ -462,7 +462,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -472,7 +472,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Превышен лимит */
@@ -482,7 +482,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -510,7 +510,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -520,7 +520,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Неверный CSRF-токен */
@@ -530,7 +530,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -540,7 +540,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Превышен лимит */
@@ -550,7 +550,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -580,7 +580,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -590,7 +590,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Неверный CSRF-токен */
@@ -600,7 +600,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -610,7 +610,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Превышен лимит */
@@ -620,7 +620,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -652,7 +652,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -662,7 +662,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Неверный CSRF-токен */
@@ -672,7 +672,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -682,7 +682,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Превышен лимит */
@@ -692,7 +692,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -720,7 +720,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -730,7 +730,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Неверный CSRF-токен */
@@ -740,7 +740,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -750,7 +750,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Превышен лимит */
@@ -760,7 +760,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -798,7 +798,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -808,7 +808,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -818,7 +818,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -851,7 +851,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -861,7 +861,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -871,7 +871,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -903,7 +903,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -913,7 +913,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Не найдено */
@@ -923,7 +923,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -933,7 +933,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -969,7 +969,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -979,7 +979,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Неверный CSRF-токен */
@@ -989,7 +989,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Не найдено */
@@ -999,7 +999,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Конфликт версий */
@@ -1009,7 +1009,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -1019,7 +1019,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1055,7 +1055,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Нет сессии или истекла */
@@ -1065,7 +1065,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Неверный CSRF-токен */
@@ -1075,7 +1075,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Не найдено */
@@ -1085,7 +1085,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -1095,7 +1095,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };
@@ -1151,7 +1151,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Ошибки валидации */
@@ -1161,7 +1161,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
             /** @description Превышен лимит */
@@ -1171,7 +1171,7 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Problem"];
-                    "application/problem+json": unknown;
+                    "application/problem+json": components["schemas"]["Problem"];
                 };
             };
         };

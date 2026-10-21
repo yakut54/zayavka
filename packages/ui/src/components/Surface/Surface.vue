@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import type { SpaceToken } from '../layout/types'
 
-import { type SpaceToken, space } from '../layout/types'
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
     padding?: SpaceToken
     radius?: 'sm' | 'md' | 'lg'
@@ -14,8 +12,6 @@ const props = withDefaults(
   }>(),
   { padding: 6, radius: 'lg', shadow: 'sm', tone: 'default', bordered: true, as: 'div' },
 )
-
-const style = computed(() => ({ padding: space(props.padding) }))
 </script>
 
 <template>
@@ -26,9 +22,9 @@ const style = computed(() => ({ padding: space(props.padding) }))
       `ui-surface--radius-${radius}`,
       `ui-surface--shadow-${shadow}`,
       `ui-surface--${tone}`,
+      `ui-surface--p-${padding}`,
       { 'ui-surface--bordered': bordered },
     ]"
-    :style="style"
   >
     <slot />
   </component>
@@ -78,5 +74,49 @@ const style = computed(() => ({ padding: space(props.padding) }))
 
 .ui-surface--shadow-lg {
   box-shadow: var(--shadow-lg);
+}
+
+.ui-surface--p-1 {
+  padding: var(--space-1);
+}
+
+.ui-surface--p-2 {
+  padding: var(--space-2);
+}
+
+.ui-surface--p-3 {
+  padding: var(--space-3);
+}
+
+.ui-surface--p-4 {
+  padding: var(--space-4);
+}
+
+.ui-surface--p-5 {
+  padding: var(--space-5);
+}
+
+.ui-surface--p-6 {
+  padding: var(--space-6);
+}
+
+.ui-surface--p-8 {
+  padding: var(--space-8);
+}
+
+.ui-surface--p-10 {
+  padding: var(--space-10);
+}
+
+.ui-surface--p-12 {
+  padding: var(--space-12);
+}
+
+.ui-surface--p-16 {
+  padding: var(--space-16);
+}
+
+.ui-surface--p-20 {
+  padding: var(--space-20);
 }
 </style>

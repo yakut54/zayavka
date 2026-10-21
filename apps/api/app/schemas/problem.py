@@ -35,7 +35,9 @@ def problem_responses(*statuses: int) -> dict[int | str, dict[str, Any]]:
         status: {
             "model": Problem,
             "description": descriptions[status],
-            "content": {"application/problem+json": {}},
+            "content": {
+                "application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}
+            },
         }
         for status in statuses
     }

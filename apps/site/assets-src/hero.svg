@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dfe8fb"/>
+      <stop offset="1" stop-color="#f4f7fe"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b63c4"/>
+      <stop offset="1" stop-color="#27449a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dbe7ff"/>
+      <stop offset="1" stop-color="#a9c0f0"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfd5e3"/>
+      <stop offset="1" stop-color="#aab2c6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#wall)"/>
+  <!-- стена с панелями -->
+  <g fill="#cdd9f3" opacity=".6">
+    <rect x="60" y="80" width="260" height="360" rx="14"/>
+    <rect x="360" y="80" width="260" height="360" rx="14"/>
+    <rect x="660" y="80" width="260" height="360" rx="14"/>
+    <rect x="960" y="80" width="180" height="360" rx="14"/>
+  </g>
+  <!-- инструментальная доска -->
+  <g stroke="#7f8db0" stroke-width="10" stroke-linecap="round" fill="none">
+    <path d="M110 150h160M110 230h160M110 310h160"/>
+    <path d="M140 150v-30M190 150v-30M240 150v-30M140 230v-30M215 230v-30M160 310v-30M230 310v-30" stroke="#3b63c4"/>
+  </g>
+  <!-- пол -->
+  <rect y="640" width="1200" height="260" fill="url(#floor)"/>
+  <rect y="636" width="1200" height="8" fill="#98a1b8"/>
+  <!-- подъёмник -->
+  <g fill="#5d6a8a">
+    <rect x="170" y="330" width="40" height="320" rx="8"/>
+    <rect x="990" y="330" width="40" height="320" rx="8"/>
+    <rect x="150" y="610" width="80" height="34" rx="10"/>
+    <rect x="970" y="610" width="80" height="34" rx="10"/>
+  </g>
+  <rect x="190" y="470" width="820" height="30" rx="12" fill="#7a86a6"/>
+  <!-- тень машины -->
+  <ellipse cx="600" cy="660" rx="430" ry="26" fill="#6f7a96" opacity=".35"/>
+  <!-- кузов -->
+  <path d="M220 440c10-40 40-70 90-80l130-36c60-48 130-76 210-76h40c80 0 150 28 205 86l60 52c46 8 66 40 66 78v54H220z" fill="url(#body)"/>
+  <!-- стёкла -->
+  <path d="M470 344c50-34 100-52 160-52h30c60 0 110 22 150 60l30 36H440z" fill="url(#glass)"/>
+  <rect x="640" y="288" width="12" height="100" fill="#27449a"/>
+  <!-- ручки, фары -->
+  <rect x="540" y="420" width="50" height="10" rx="5" fill="#dbe7ff"/>
+  <rect x="790" y="420" width="50" height="10" rx="5" fill="#dbe7ff"/>
+  <path d="M1020 446c30 4 46 18 46 40v14h-70z" fill="#ffe08a"/>
+  <rect x="226" y="450" width="40" height="26" rx="6" fill="#ff8a7a"/>
+  <!-- колёса -->
+  <g>
+    <circle cx="390" cy="528" r="74" fill="#1f2433"/>
+    <circle cx="390" cy="528" r="44" fill="#cfd5e3"/>
+    <circle cx="390" cy="528" r="14" fill="#6f7a96"/>
+    <circle cx="880" cy="528" r="74" fill="#1f2433"/>
+    <circle cx="880" cy="528" r="44" fill="#cfd5e3"/>
+    <circle cx="880" cy="528" r="14" fill="#6f7a96"/>
+  </g>
+  <!-- ключ на полу -->
+  <g transform="translate(900 740) rotate(-18)" fill="#7a86a6">
+    <rect x="0" y="0" width="190" height="22" rx="11"/>
+    <circle cx="0" cy="11" r="30"/>
+    <circle cx="0" cy="11" r="12" fill="#aab2c6"/>
+  </g>
+  <!-- конус -->
+  <path d="M130 760l30-90 30 90z" fill="#ff8a3d"/>
+  <rect x="116" y="758" width="88" height="14" rx="5" fill="#d8691c"/>
+</svg>

@@ -1,0 +1,61 @@
+# Один Caddyfile для test и prod: адреса и auto_https задаются переменными окружения.
+#   test: SITE_ADDR=:8080 ADMIN_ADDR=:8081 AUTO_HTTPS=off
+#   prod: SITE_ADDR=example.ru ADMIN_ADDR=admin.example.ru (HTTPS автоматически)
+{
+	admin off
+	auto_https {$AUTO_HTTPS:on}
+}
+
+(common_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+}
+
+(caching) {
+	@hashed path /assets/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+	@document not path /assets/*
+	header @document Cache-Control "no-cache"
+}
+
+{$SITE_ADDR::8080} {
+	root * /srv/site
+	encode zstd gzip
+	import common_headers
+	import caching
+	header Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; font-src 'self'; frame-src https://yandex.ru; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+	handle {
+		try_files {path} {path}/index.html
+		file_server
+	}
+	handle_errors {
+		rewrite * /404/index.html
+		file_server
+	}
+}
+
+{$ADMIN_ADDR::8081} {
+	root * /srv/admin
+	encode zstd gzip
+	import common_headers
+	import caching
+	header Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+	header X-Robots-Tag "noindex, nofollow"
+
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}

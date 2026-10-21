@@ -84,7 +84,14 @@ async function type(input: HTMLInputElement, text: string): Promise<void> {
 }
 
 async function paste(input: HTMLInputElement, text: string): Promise<void> {
-  await fireEvent.paste(input, { clipboardData: { getData: () => text } })
+  const event = new InputEvent('beforeinput', {
+    inputType: 'insertFromPaste',
+    data: text,
+    bubbles: true,
+    cancelable: true,
+  })
+  input.dispatchEvent(event)
+  await Promise.resolve()
 }
 
 describe('PhoneInput: ввод', () => {

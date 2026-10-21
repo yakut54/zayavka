@@ -33,7 +33,7 @@ const mask = usePhoneMask(toRef(props, 'modelValue'), (digits) => emit('update:m
     :model-value="mask.display.value"
     @input="mask.onInput"
     @keydown="mask.onKeydown"
-    @paste="mask.onPaste"
+    @beforeinput="mask.onBeforeInput"
     @blur="emit('blur', $event)"
   />
 </template>

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import type { SpaceToken } from '../layout/types'
 
-import { type SpaceToken, space } from '../layout/types'
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
     gap?: SpaceToken
     align?: 'start' | 'center' | 'end' | 'baseline' | 'stretch'
@@ -13,8 +11,6 @@ const props = withDefaults(
   }>(),
   { gap: 3, align: 'center', justify: 'start', wrap: false, as: 'div' },
 )
-
-const style = computed(() => ({ gap: space(props.gap) }))
 </script>
 
 <template>
@@ -24,9 +20,9 @@ const style = computed(() => ({ gap: space(props.gap) }))
       'ui-inline',
       `ui-inline--align-${align}`,
       `ui-inline--justify-${justify}`,
+      `ui-inline--gap-${gap}`,
       { 'ui-inline--wrap': wrap },
     ]"
-    :style="style"
   >
     <slot />
   </component>
@@ -79,5 +75,49 @@ const style = computed(() => ({ gap: space(props.gap) }))
 
 .ui-inline--justify-between {
   justify-content: space-between;
+}
+
+.ui-inline--gap-1 {
+  gap: var(--space-1);
+}
+
+.ui-inline--gap-2 {
+  gap: var(--space-2);
+}
+
+.ui-inline--gap-3 {
+  gap: var(--space-3);
+}
+
+.ui-inline--gap-4 {
+  gap: var(--space-4);
+}
+
+.ui-inline--gap-5 {
+  gap: var(--space-5);
+}
+
+.ui-inline--gap-6 {
+  gap: var(--space-6);
+}
+
+.ui-inline--gap-8 {
+  gap: var(--space-8);
+}
+
+.ui-inline--gap-10 {
+  gap: var(--space-10);
+}
+
+.ui-inline--gap-12 {
+  gap: var(--space-12);
+}
+
+.ui-inline--gap-16 {
+  gap: var(--space-16);
+}
+
+.ui-inline--gap-20 {
+  gap: var(--space-20);
 }
 </style>

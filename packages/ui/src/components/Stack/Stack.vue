@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import type { SpaceToken } from '../layout/types'
 
-import { type SpaceToken, space } from '../layout/types'
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
     gap?: SpaceToken
     align?: 'start' | 'center' | 'end' | 'stretch'
@@ -11,14 +9,12 @@ const props = withDefaults(
   }>(),
   { gap: 4, align: 'stretch', as: 'div' },
 )
-
-const style = computed(() => ({ gap: space(props.gap) }))
 </script>
 
 <template>
-  <component :is="as" :class="['ui-stack', `ui-stack--${align}`]" :style="style"
-    ><slot
-  /></component>
+  <component :is="as" :class="['ui-stack', `ui-stack--${align}`, `ui-stack--gap-${gap}`]">
+    <slot />
+  </component>
 </template>
 
 <style scoped>
@@ -44,5 +40,49 @@ const style = computed(() => ({ gap: space(props.gap) }))
 
 .ui-stack--stretch {
   align-items: stretch;
+}
+
+.ui-stack--gap-1 {
+  gap: var(--space-1);
+}
+
+.ui-stack--gap-2 {
+  gap: var(--space-2);
+}
+
+.ui-stack--gap-3 {
+  gap: var(--space-3);
+}
+
+.ui-stack--gap-4 {
+  gap: var(--space-4);
+}
+
+.ui-stack--gap-5 {
+  gap: var(--space-5);
+}
+
+.ui-stack--gap-6 {
+  gap: var(--space-6);
+}
+
+.ui-stack--gap-8 {
+  gap: var(--space-8);
+}
+
+.ui-stack--gap-10 {
+  gap: var(--space-10);
+}
+
+.ui-stack--gap-12 {
+  gap: var(--space-12);
+}
+
+.ui-stack--gap-16 {
+  gap: var(--space-16);
+}
+
+.ui-stack--gap-20 {
+  gap: var(--space-20);
 }
 </style>

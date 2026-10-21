@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { MessageKey } from '@app/i18n'
-import { computed, nextTick, onMounted, ref, useAttrs, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { useSplitAttrs } from '../../composables/useSplitAttrs'
 import Text from '../Text/Text.vue'
 
 defineOptions({ inheritAttrs: false })
@@ -30,14 +31,9 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const attrs = useAttrs()
 const el = ref<HTMLTextAreaElement | null>(null)
 
-const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }))
-const textareaAttrs = computed(() => {
-  const { class: _class, style: _style, ...rest } = attrs
-  return rest
-})
+const { rootAttrs, innerAttrs: textareaAttrs } = useSplitAttrs()
 const length = computed(() => props.modelValue.length)
 const nearLimit = computed(
   () => props.maxlength !== undefined && length.value >= props.maxlength * 0.9,
@@ -62,7 +58,11 @@ function onKeydown(event: KeyboardEvent): void {
   }
 }
 
-onMounted(resize)
+onMounted(() => {
+  // CSSOM, а не style-атрибут: строгий CSP (style-src 'self') запрещает инлайновые стили в HTML
+  el.value?.style.setProperty('--ui-rows', String(props.maxRows))
+  resize()
+})
 watch(
   () => props.modelValue,
   () => nextTick(resize),
@@ -79,7 +79,6 @@ defineExpose({ focus: () => el.value?.focus() })
     <textarea
       ref="el"
       :class="['ui-textarea__control', { 'ui-textarea__control--auto': autoresize }]"
-      :style="{ '--ui-rows': maxRows }"
       :value="modelValue"
       :rows="rows"
       :name="name"

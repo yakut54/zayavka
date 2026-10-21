@@ -73,7 +73,7 @@ function onRowClick(row: DataTableRow): void {
             :key="column.key"
             scope="col"
             :class="`ui-table__th--${column.align ?? 'start'}`"
-            :style="column.width ? { width: column.width } : undefined"
+            v-bind="column.width ? { style: { width: column.width } } : {}"
             :aria-sort="ariaSort(column)"
           >
             <button

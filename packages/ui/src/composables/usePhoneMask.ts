@@ -49,7 +49,8 @@ export interface PhoneMask {
   display: ComputedRef<string>
   onInput: (event: Event) => void
   onKeydown: (event: KeyboardEvent) => void
-  onPaste: (event: ClipboardEvent) => void
+  /** Вставка обрабатывается через beforeinput: слушатель `paste` Lighthouse считает запретом вставки. */
+  onBeforeInput: (event: InputEvent) => void
 }
 
 /**
@@ -99,9 +100,10 @@ export function usePhoneMask(
     commit(el, digits.slice(0, before - 1) + digits.slice(before), before - 1)
   }
 
-  function onPaste(event: ClipboardEvent): void {
+  function onBeforeInput(event: InputEvent): void {
+    if (event.inputType !== 'insertFromPaste' && event.inputType !== 'insertFromDrop') return
     const el = event.target as HTMLInputElement
-    const pasted = event.clipboardData?.getData('text') ?? ''
+    const pasted = event.data ?? event.dataTransfer?.getData('text/plain') ?? ''
     const normalized = normalizePhoneDigits(pasted)
     event.preventDefault()
     if (normalized.length >= 10 || el.value === '') {
@@ -117,5 +119,5 @@ export function usePhoneMask(
     commit(el, digits, countDigits(left) + inserted.length)
   }
 
-  return { display, onInput, onKeydown, onPaste }
+  return { display, onInput, onKeydown, onBeforeInput }
 }

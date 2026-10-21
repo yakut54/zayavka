@@ -1,0 +1,82 @@
+# Окружение для e2e (ТЗ-1 §5.1, §17.4): отдельная БД, Mailpit, API, воркер и Caddy со статикой.
+# Перед запуском соберите статику: pnpm --filter @app/site build && pnpm --filter @app/admin build
+name: zayavka-test
+
+x-api-env: &api-env
+  APP_ENV: test
+  DATABASE_URL: postgresql+asyncpg://app:app@db:5432/app
+  SECRET_KEY: e2e-secret-key-e2e-secret-key-e2e-secret-key-0123456789abcd
+  SITE_ORIGIN: http://localhost:8080
+  ADMIN_ORIGIN: http://localhost:8081
+  NOTIFY_EMAILS: owner@example.ru
+  PRIVACY_POLICY_VERSION: '2026-10-20'
+  SMTP_HOST: mailpit
+  SMTP_PORT: '1025'
+  SMTP_FROM: Заявки <noreply@example.ru>
+  RATE_LIMIT_LEADS: 1000/60
+  RATE_LIMIT_LOGIN: 1000/60
+  LOG_LEVEL: WARNING
+
+services:
+  db:
+    image: postgres:18
+    environment: { POSTGRES_DB: app, POSTGRES_USER: app, POSTGRES_PASSWORD: app }
+    tmpfs: [/var/lib/postgresql]
+    healthcheck: { test: ['CMD-SHELL', 'pg_isready -U app'], interval: 2s, retries: 30 }
+
+  mailpit:
+    image: axllent/mailpit
+    ports: ['127.0.0.1:18025:8025']
+    healthcheck: { test: ['CMD', '/mailpit', 'readyz'], interval: 2s, retries: 30 }
+
+  migrate:
+    build: ../apps/api
+    command: ['alembic', 'upgrade', 'head']
+    environment: *api-env
+    depends_on:
+      db: { condition: service_healthy }
+
+  api:
+    build: ../apps/api
+    environment:
+      <<: *api-env
+      FORWARDED_ALLOW_IPS: '*'
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/v1/readyz').status==200 else 1)",
+        ]
+      interval: 2s
+      retries: 30
+
+  worker:
+    build: ../apps/api
+    command: ['python', '-m', 'app.worker']
+    environment: *api-env
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  web:
+    image: caddy:2-alpine
+    environment:
+      SITE_ADDR: ':8080'
+      ADMIN_ADDR: ':8081'
+      AUTO_HTTPS: 'off'
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../apps/site/dist:/srv/site:ro
+      - ../apps/admin/dist:/srv/admin:ro
+    ports: ['127.0.0.1:8080:8080', '127.0.0.1:8081:8081']
+    depends_on:
+      api: { condition: service_healthy }
+    healthcheck:
+      {
+        test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:8080/'],
+        interval: 2s,
+        retries: 30,
+      }

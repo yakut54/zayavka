@@ -5,3 +5,4 @@ docs/spec.md
 *.pdf
 packages/api-client/src/schema.d.ts
 packages/api-client/openapi.json
+docs/spec2.md

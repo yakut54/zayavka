@@ -8,8 +8,10 @@ import VisuallyHidden from '../VisuallyHidden/VisuallyHidden.vue'
 
 const props = withDefaults(
   defineProps<{
-    k: MessageKey
+    /** Ключ словаря. Для данных, которые не переводятся (телефон, email), вместо него — `text`. */
+    k?: MessageKey
     args?: MessageArgs
+    text?: string
     href?: string
     to?: RouteLocationRaw
     external?: boolean
@@ -34,7 +36,8 @@ const attrs = computed(() => {
     :class="['ui-link', `ui-link--${tone}`]"
     v-bind="attrs"
   >
-    <Text :k="k" :args="args" as="span" variant="body" weight="medium" class="ui-link__text" />
+    <Text v-if="k" :k="k" :args="args" as="span" variant="body" weight="medium" />
+    <span v-else class="ui-link__text">{{ text }}</span>
     <VisuallyHidden v-if="external"> (<Text k="common.opensInNewTab" />)</VisuallyHidden>
   </component>
 </template>

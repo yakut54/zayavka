@@ -30,7 +30,7 @@ describe('layout', () => {
     })
     const el = container.firstElementChild as HTMLElement
     expect(el.tagName).toBe('UL')
-    expect(el.style.gap).toBe('var(--space-8)')
+    expect(el.classList).toContain('ui-stack--gap-8')
     expect(el.classList).toContain('ui-stack--center')
   })
 
@@ -40,7 +40,7 @@ describe('layout', () => {
       slots,
     })
     const el = container.firstElementChild as HTMLElement
-    expect(el.style.gap).toBe('var(--space-2)')
+    expect(el.classList).toContain('ui-inline--gap-2')
     expect(el.classList).toContain('ui-inline--wrap')
     expect(el.classList).toContain('ui-inline--justify-between')
     expect(el.classList).toContain('ui-inline--align-baseline')
@@ -52,23 +52,21 @@ describe('layout', () => {
       slots,
     })
     const el = container.firstElementChild as HTMLElement
-    expect(el.style.getPropertyValue('--ui-grid-cols')).toBe('1')
-    expect(el.style.getPropertyValue('--ui-grid-cols-md')).toBe('2')
-    expect(el.style.getPropertyValue('--ui-grid-cols-lg')).toBe('3')
+    for (const cls of ['ui-grid--c-1', 'ui-grid--md-2', 'ui-grid--lg-3', 'ui-grid--gap-6']) {
+      expect(el.classList).toContain(cls)
+    }
   })
 
   it('Grid: пропущенные брейкпоинты наследуют предыдущие', () => {
     const { container } = renderWithApp(Grid, { props: { cols: { base: 2 } }, slots })
     const el = container.firstElementChild as HTMLElement
-    expect(el.style.getPropertyValue('--ui-grid-cols-md')).toBe('2')
-    expect(el.style.getPropertyValue('--ui-grid-cols-lg')).toBe('2')
+    expect(el.classList).toContain('ui-grid--md-2')
+    expect(el.classList).toContain('ui-grid--lg-2')
   })
 
   it('Grid по умолчанию — одна колонка', () => {
     const { container } = renderWithApp(Grid, { slots })
-    expect(
-      (container.firstElementChild as HTMLElement).style.getPropertyValue('--ui-grid-cols'),
-    ).toBe('1')
+    expect((container.firstElementChild as HTMLElement).classList).toContain('ui-grid--c-1')
   })
 
   it('Surface: отступ, радиус, тень, тон, рамка', () => {
@@ -85,7 +83,7 @@ describe('layout', () => {
     })
     const el = container.firstElementChild as HTMLElement
     expect(el.tagName).toBe('SECTION')
-    expect(el.style.padding).toBe('var(--space-10)')
+    expect(el.classList).toContain('ui-surface--p-10')
     for (const cls of ['ui-surface--radius-sm', 'ui-surface--shadow-lg', 'ui-surface--accent']) {
       expect(el.classList).toContain(cls)
     }

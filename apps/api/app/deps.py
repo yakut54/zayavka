@@ -16,7 +16,8 @@ DATA_DIR = Path(__file__).parent / "data"
 @lru_cache
 def consent_text_sha256() -> bytes:
     """Хеш текста согласия, который показывается человеку (раздел 6.2, `consents`)."""
-    return hashlib.sha256((DATA_DIR / "consent_text.ru.md").read_bytes()).digest()
+    text = (DATA_DIR / "consent_text.ru.md").read_text(encoding="utf-8").strip()
+    return hashlib.sha256(text.encode()).digest()
 
 
 def load_service_slugs(path: Path) -> frozenset[str]:

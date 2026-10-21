@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
+import { useSplitAttrs } from '../../composables/useSplitAttrs'
 
 defineOptions({ inheritAttrs: false })
 
@@ -15,12 +15,7 @@ withDefaults(
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean]; blur: [event: FocusEvent] }>()
 
-const attrs = useAttrs()
-const rootAttrs = computed(() => ({ class: attrs.class, style: attrs.style }))
-const inputAttrs = computed(() => {
-  const { class: _class, style: _style, ...rest } = attrs
-  return rest
-})
+const { rootAttrs, innerAttrs: inputAttrs } = useSplitAttrs()
 </script>
 
 <template>

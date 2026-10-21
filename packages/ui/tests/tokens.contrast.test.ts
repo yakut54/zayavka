@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url'
 
 import { describe, expect, it } from 'vitest'
 
+import { AA_NON_TEXT, AA_TEXT, brandAccentContrast, contrast } from '../src/tokens/contrast'
+
 const css = readFileSync(
   join(dirname(fileURLToPath(import.meta.url)), '../src/tokens/tokens.css'),
   'utf8',
@@ -48,55 +50,8 @@ function resolve(value: string, vars: Vars, depth = 0): string {
   })
 }
 
-type Rgb = [number, number, number]
-
-function oklchToLinearRgb(l: number, c: number, hDeg: number): Rgb {
-  const h = (hDeg * Math.PI) / 180
-  const a = c * Math.cos(h)
-  const b = c * Math.sin(h)
-  const l_ = (l + 0.3963377774 * a + 0.2158037573 * b) ** 3
-  const m_ = (l - 0.1055613458 * a - 0.0638541728 * b) ** 3
-  const s_ = (l - 0.0894841775 * a - 1.291485548 * b) ** 3
-  const clamp = (x: number) => Math.min(1, Math.max(0, x))
-  return [
-    clamp(4.0767416621 * l_ - 3.3077115913 * m_ + 0.2309699292 * s_),
-    clamp(-1.2684380046 * l_ + 2.6097574011 * m_ - 0.3413193965 * s_),
-    clamp(-0.0041960863 * l_ - 0.7034186147 * m_ + 1.707614701 * s_),
-  ]
-}
-
-function srgbToLinear(channel: number): number {
-  const c = channel / 255
-  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
-}
-
-function toLinearRgb(color: string): Rgb {
-  const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(color)
-  if (hex) {
-    let digits = hex[1] as string
-    if (digits.length === 3) digits = [...digits].map((d) => d + d).join('')
-    const n = Number.parseInt(digits, 16)
-    return [srgbToLinear((n >> 16) & 255), srgbToLinear((n >> 8) & 255), srgbToLinear(n & 255)]
-  }
-  const oklch = /^oklch\(\s*([\d.]+)%\s+([\d.]+)\s+([\d.]+)\s*\)$/.exec(color)
-  if (oklch) {
-    return oklchToLinearRgb(Number(oklch[1]) / 100, Number(oklch[2]), Number(oklch[3]))
-  }
-  throw new Error(`unsupported color: ${color}`)
-}
-
-function luminance([r, g, b]: Rgb): number {
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b
-}
-
-export function contrast(foreground: string, background: string): number {
-  const a = luminance(toLinearRgb(foreground))
-  const b = luminance(toLinearRgb(background))
-  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
-}
-
-const TEXT = 4.5
-const NON_TEXT = 3
+const TEXT = AA_TEXT
+const NON_TEXT = AA_NON_TEXT
 
 // [передний план, фон, минимальный контраст]
 const PAIRS: [string, string, number][] = [
@@ -167,5 +122,18 @@ describe('вспомогательные функции', () => {
   it('цвет бренда на белом проходит AA при оттенке по умолчанию', () => {
     const vars = { ...primitives, ...lightSemantic }
     expect(contrast(resolve('var(--brand-600)', vars), '#ffffff')).toBeGreaterThanOrEqual(TEXT)
+  })
+})
+
+describe('цвет бренда', () => {
+  it.each([0, 30, 90, 150, 200, 250, 300, 330])(
+    'оттенок %i: подсказка brandAccentContrast считается',
+    (hue) => {
+      expect(brandAccentContrast(hue)).toBeGreaterThan(1)
+    },
+  )
+
+  it('оттенок по умолчанию проходит AA', () => {
+    expect(brandAccentContrast(250)).toBeGreaterThanOrEqual(AA_TEXT)
   })
 })
