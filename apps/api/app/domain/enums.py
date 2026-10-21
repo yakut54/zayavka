@@ -23,6 +23,7 @@ class LeadEventType(StrEnum):
 class NotificationChannel(StrEnum):
     EMAIL = "email"
     MAX = "max"
+    MAX_USER = "max_user"
     LOG = "log"
 
 
@@ -30,3 +31,4 @@ class OutboxStatus(StrEnum):
     PENDING = "pending"
     SENT = "sent"
     FAILED = "failed"
+    CANCELLED = "cancelled"

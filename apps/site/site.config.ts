@@ -27,6 +27,9 @@ export default defineSiteConfig({
       description: 'content.services.diagnostics.desc',
       priceFrom: 1500,
       icon: 'gauge',
+      bookable: true,
+      durationMin: 60,
+      bufferMin: 15,
     },
     {
       slug: 'maintenance',
@@ -34,6 +37,9 @@ export default defineSiteConfig({
       description: 'content.services.maintenance.desc',
       priceFrom: 3500,
       icon: 'droplet',
+      bookable: true,
+      durationMin: 90,
+      bufferMin: 15,
     },
     {
       slug: 'brakes',
@@ -41,6 +47,9 @@ export default defineSiteConfig({
       description: 'content.services.brakes.desc',
       priceFrom: 2800,
       icon: 'shield',
+      bookable: true,
+      durationMin: 120,
+      bufferMin: 15,
     },
     {
       slug: 'tires',
@@ -48,6 +57,9 @@ export default defineSiteConfig({
       description: 'content.services.tires.desc',
       priceFrom: 2000,
       icon: 'tire',
+      bookable: true,
+      durationMin: 45,
+      bufferMin: 10,
     },
   ],
   advantages: [

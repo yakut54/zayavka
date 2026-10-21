@@ -72,12 +72,22 @@ export function validateSiteConfig(
           description: key,
           priceFrom: z.number().int().positive(),
           icon,
+          bookable: z.boolean().optional(),
+          durationMin: z.number().int().min(5).max(480).multipleOf(5).optional(),
+          bufferMin: z.number().int().min(0).max(120).optional(),
         }),
       )
       .min(1)
       .refine(
         (items) => new Set(items.map((s) => s.slug)).size === items.length,
         'slug услуг должны быть уникальны',
+      )
+      .refine(
+        (items) =>
+          items.every(
+            (s) => !s.bookable || (s.durationMin !== undefined && s.bufferMin !== undefined),
+          ),
+        'для услуг с bookable: true обязательны durationMin и bufferMin',
       ),
     advantages: z
       .array(z.object({ icon, title: key, text: key }))

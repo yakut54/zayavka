@@ -8,6 +8,12 @@ export interface ServiceConfig {
   description: MessageKey
   priceFrom: number
   icon: IconName
+  /** Доступна для онлайн-записи (проект 2). По умолчанию false. */
+  bookable?: boolean
+  /** Длительность услуги, мин: 5–480, кратно 5. Обязательна при bookable. */
+  durationMin?: number
+  /** Буфер после услуги (уборка, подготовка), мин: 0–120. Обязателен при bookable. */
+  bufferMin?: number
 }
 
 export interface SiteConfig {

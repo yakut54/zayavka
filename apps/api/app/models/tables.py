@@ -24,6 +24,24 @@ from app.domain.enums import LeadStatus
 from app.models.base import Base
 
 NOW = text("now()")
+
+OUTBOX_KINDS = (
+    "lead_created",
+    "booking_created_owner",
+    "booking_confirmed_client",
+    "booking_reminder_24h",
+    "booking_reminder_2h",
+    "booking_cancelled_client",
+    "booking_cancelled_owner",
+    "booking_rescheduled_client",
+    "bot_welcome",
+)
+
+
+def _in(values: tuple[str, ...]) -> str:
+    return ", ".join(f"'{v}'" for v in values)
+
+
 UUIDV7 = text("uuidv7()")
 
 lead_status_enum = PGEnum(
@@ -154,10 +172,20 @@ class NotificationOutbox(Base):
     last_error: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = _now()
     sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    dedupe_key: Mapped[str | None] = mapped_column(Text)
 
     __table_args__ = (
-        CheckConstraint("channel IN ('email', 'max', 'log')", name="channel_values"),
-        CheckConstraint("status IN ('pending', 'sent', 'failed')", name="status_values"),
+        CheckConstraint("channel IN ('email', 'max', 'max_user', 'log')", name="channel_values"),
+        CheckConstraint(
+            "status IN ('pending', 'sent', 'failed', 'cancelled')", name="status_values"
+        ),
+        CheckConstraint(f"kind IN ({_in(OUTBOX_KINDS)})", name="kind_values"),
+        Index(
+            "ix_notification_outbox_dedupe_key",
+            "dedupe_key",
+            unique=True,
+            postgresql_where=text("dedupe_key IS NOT NULL"),
+        ),
         Index(
             "ix_outbox_pending",
             "next_attempt_at",

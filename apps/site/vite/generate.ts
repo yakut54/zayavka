@@ -18,6 +18,13 @@ export function buildServicesJson(config: SiteConfig, dictionary: Dictionary): s
   const data = {
     slugs: config.services.map((s) => s.slug),
     titles: Object.fromEntries(config.services.map((s) => [s.slug, lookup(dictionary, s.title)])),
+    services: config.services.map((s) => ({
+      slug: s.slug,
+      title: lookup(dictionary, s.title),
+      priceFrom: s.priceFrom,
+      bookable: s.bookable ?? false,
+      ...(s.bookable ? { durationMin: s.durationMin, bufferMin: s.bufferMin } : {}),
+    })),
   }
   return `${JSON.stringify(data, null, 2)}\n`
 }

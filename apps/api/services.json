@@ -10,5 +10,39 @@
     "maintenance": "Техобслуживание",
     "brakes": "Ремонт тормозов",
     "tires": "Шиномонтаж"
-  }
+  },
+  "services": [
+    {
+      "slug": "diagnostics",
+      "title": "Компьютерная диагностика",
+      "priceFrom": 1500,
+      "bookable": true,
+      "durationMin": 60,
+      "bufferMin": 15
+    },
+    {
+      "slug": "maintenance",
+      "title": "Техобслуживание",
+      "priceFrom": 3500,
+      "bookable": true,
+      "durationMin": 90,
+      "bufferMin": 15
+    },
+    {
+      "slug": "brakes",
+      "title": "Ремонт тормозов",
+      "priceFrom": 2800,
+      "bookable": true,
+      "durationMin": 120,
+      "bufferMin": 15
+    },
+    {
+      "slug": "tires",
+      "title": "Шиномонтаж",
+      "priceFrom": 2000,
+      "bookable": true,
+      "durationMin": 45,
+      "bufferMin": 10
+    }
+  ]
 }
