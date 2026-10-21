@@ -149,60 +149,44 @@ test.describe('прочее', () => {
       if (m.type() === 'error' || m.type() === 'warning') problems.push(m.text())
     })
     page.on('pageerror', (e) => problems.push(e.message))
-    // подробности нарушений CSP: что именно заблокировано и где (в консоли браузера этого нет)
+    // подробности нарушений CSP (что и на каком элементе) в консоли браузера не видны
     await page.addInitScript(() => {
-      // кто меняет style: стек вызова каждой записи через CSSOM/атрибут (только для разбора нарушений)
-      const ops: string[] = []
-      ;(window as unknown as { __styleOps: string[] }).__styleOps = ops
-      const where = () => (new Error().stack ?? '').split(/\r?\n/).slice(2, 5).join(' | ')
-      const proto = CSSStyleDeclaration.prototype
-      for (const name of Object.getOwnPropertyNames(proto)) {
-        const descriptor = Object.getOwnPropertyDescriptor(proto, name)
-        if (!descriptor?.set || name === 'length') continue
-        const original = descriptor.set
-        Object.defineProperty(proto, name, {
-          ...descriptor,
-          set(value: string) {
-            ops.push(`set ${name}=${JSON.stringify(value)} ${where()}`)
-            original.call(this, value)
-          },
-        })
-      }
-      for (const method of ['setProperty', 'removeProperty'] as const) {
-        const original = proto[method] as (...args: string[]) => string
-        proto[method] = function (this: CSSStyleDeclaration, ...args: string[]) {
-          ops.push(`${method}(${args.join(',')}) ${where()}`)
-          return original.apply(this, args)
-        } as never
-      }
-      const setAttribute = Element.prototype.setAttribute
-      Element.prototype.setAttribute = function (this: Element, name: string, value: string) {
-        if (name.toLowerCase() === 'style') ops.push(`setAttribute(style) ${where()}`)
-        setAttribute.call(this, name, value)
-      }
+      const violations: { directive: string; sample: string; tag: string }[] = []
+      ;(window as unknown as { __csp: typeof violations }).__csp = violations
       document.addEventListener('securitypolicyviolation', (event) => {
-        console.error(
-          `CSP ${event.violatedDirective}: ${event.blockedURI} sample=${JSON.stringify(event.sample)} at ${event.sourceFile}:${event.lineNumber} target=${(event.target as Element | null)?.outerHTML?.slice(0, 160) ?? String(event.target)}`,
-        )
+        const target = event.target as Element | null
+        violations.push({
+          directive: event.violatedDirective,
+          sample: event.sample,
+          tag: target?.tagName ?? '',
+        })
       })
     })
     await page.goto('/')
     await page.locator('input[name="name"]').waitFor()
-    const beforeClick = problems.length
     await page.getByRole('button', { name: 'Оставить заявку' }).first().click()
     await page.waitForLoadState('networkidle')
-    if (problems.length > 0) {
-      problems.push(`PHASE: до клика было ${beforeClick} сообщений`)
-      const styled = await page.evaluate(() =>
-        [...document.querySelectorAll('[style]')].map((el) => el.outerHTML.slice(0, 160)),
-      )
-      problems.push(...styled.map((html) => `STYLED-ELEMENT ${html}`))
-      const ops = await page.evaluate(
-        () => (window as unknown as { __styleOps: string[] }).__styleOps,
-      )
-      problems.push(...ops.slice(-12).map((op) => `STYLE-OP ${op}`))
-    }
-    expect(problems).toEqual([])
+    const violations = await page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            __csp: { directive: string; sample: string; tag: string }[]
+          }
+        ).__csp,
+    )
+    // Известная особенность WebKit: при `style-src 'self'` он сообщает о «встроенном стиле» на
+    // нативном <select> (пустой sample, атрибута style в DOM нет, JS стили не меняет) —
+    // это внутренняя разметка движка. Остальные нарушения по-прежнему роняют тест.
+    const engineNoise = (v: (typeof violations)[number]) =>
+      v.directive === 'style-src-attr' && v.sample === '' && v.tag === 'SELECT'
+    const noise = violations.filter(engineNoise).length
+    const real = violations.filter((v) => !engineNoise(v))
+    const refused = (text: string) => text.startsWith('Refused to apply a stylesheet')
+    const remaining = problems.filter(refused).slice(noise)
+    const result = [...problems.filter((text) => !refused(text)), ...remaining]
+    for (const v of real)
+      result.push(`CSP ${v.directive} sample=${JSON.stringify(v.sample)} <${v.tag}>`)
+    expect(result).toEqual([])
   })
 
   test('заголовки безопасности и кэширование', async ({ request }) => {
