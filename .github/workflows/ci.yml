@@ -61,7 +61,7 @@ jobs:
       - run: pnpm --filter @app/site build && pnpm --filter @app/admin build
       - run: docker compose -p zayavka-test -f infra/compose.test.yml up -d --build --wait
       - run: docker compose -p zayavka-test -f infra/compose.test.yml exec -T api python -m app.cli create-admin --email contract@example.ru --stdin <<< 'contract-pass-123'
-      - run: API_URL_FROM_DOCKER=http://172.17.0.1:8080 API_URL=http://localhost:8080 scripts/contract.sh
+      - run: API_URL_FROM_DOCKER=http://172.17.0.1:8080 API_URL=http://localhost:8080 bash scripts/contract.sh
       - if: always()
         run: docker compose -p zayavka-test -f infra/compose.test.yml down -v
 
@@ -76,7 +76,7 @@ jobs:
       - run: pnpm --filter @app/e2e exec playwright install --with-deps chromium webkit
       - run: pnpm --filter @app/site build && pnpm --filter @app/admin build
       - run: docker compose -p zayavka-test -f infra/compose.test.yml up -d --build --wait
-      - run: pnpm e2e
+      - run: pnpm --filter @app/e2e run e2e
         env: { CI: 'true', E2E_WEBKIT: '1' }
       - if: failure()
         uses: actions/upload-artifact@v4

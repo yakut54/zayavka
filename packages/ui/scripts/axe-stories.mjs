@@ -32,10 +32,22 @@ for (const story of stories) {
   await page.waitForTimeout(150)
   await page.addScriptTag({ content: axeSource })
   const violations = await page.evaluate(async () => {
-    const result = await window.axe.run(document, {
+    const options = {
       runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
       rules: { region: { enabled: false } },
-    })
+    }
+    // addon-a11y в самом Storybook тоже гоняет axe на странице: на медленной машине
+    // запуски пересекаются («Axe is already running») — ждём и повторяем.
+    let result
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        result = await window.axe.run(document, options)
+        break
+      } catch (error) {
+        if (attempt >= 20 || !String(error).includes('already running')) throw error
+        await new Promise((resolve) => setTimeout(resolve, 250))
+      }
+    }
     return result.violations.map((v) => ({
       id: v.id,
       help: v.help,

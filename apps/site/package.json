@@ -12,6 +12,7 @@
     "preview": "vite preview --port 4173",
     "budget": "node scripts/check-budget.mjs",
     "typecheck": "vue-tsc --noEmit",
+    "pretest": "node scripts/make-images.mjs",
     "test": "vitest run --coverage"
   },
   "dependencies": {
