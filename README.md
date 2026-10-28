@@ -54,3 +54,19 @@ White-label лендинг с приёмом заявок и админкой. �
 - [x] M7 публичный сайт (`apps/site`, e2e: `pnpm e2e`, Lighthouse: `pnpm exec lhci autorun`)
 - [x] M8 админка (`apps/admin`)
 - [x] M9 качество (CI, Dependabot, gitleaks)
+
+## Проект 2: онлайн-запись через мини-приложение MAX (docs/spec2.md)
+
+Статус: P0–P9 готовы; P10 (прод) ждёт домен, SMTP, VDS и токен бота. Журналы — `docs/PROGRESS.md`, `docs/DECISIONS.md`, `docs/QUESTIONS.md`.
+
+- `apps/max-app` — мини-приложение (SPA, роутер в памяти, мост MAX только через `useMaxBridge()`):
+  `pnpm --filter @app/max-app dev` (порт 5175, `/api` проксируется на :8000).
+  Демо-режим вне MAX включается сборкой с `VITE_DEMO=true` и `MAX_DEMO_BRIDGE=true` на API;
+  в обычной сборке его кода нет (`pnpm --filter @app/max-app check-bundle`).
+- Админка: разделы «Записи», «Сотрудники», «Настройки записи» (`apps/admin`).
+- Ссылка на бота: `apps/max-app/max.config.ts` (`botLink`) и `max.botUsername` в конфиге сайта; кнопки записи на лендинге включает `max.bookingEnabled`.
+- E2E: статика (`pnpm --filter @app/site build && pnpm --filter @app/admin build && VITE_DEMO=true pnpm --filter @app/max-app build`),
+  `docker compose -p zayavka-test -f infra/compose.test.yml up -d --build --wait`, затем `pnpm --filter @app/e2e e2e`.
+  Окружение включает заглушку Bot API (`e2e/max-api-stub`, :19000), мини-приложение на :8082.
+  Контрактный прогон (schemathesis) меняет данные стенда — перед e2e пересоздайте его (`down -v`).
+- Если Playwright не может скачать браузеры: `PW_CHANNEL=chrome` использует установленный Chrome.
