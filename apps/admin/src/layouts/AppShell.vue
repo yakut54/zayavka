@@ -6,6 +6,7 @@ import { RouterLink, useRouter } from 'vue-router'
 
 import { adminConfig } from '../../admin.config'
 import { useLogout, useMe } from '../features/auth/useAuth'
+import { useTodayCount } from '../features/bookings/queries'
 import { useNewLeadsCount } from '../features/leads/queries'
 import { useUiStore } from '../stores/ui'
 
@@ -14,6 +15,7 @@ const uiStore = useUiStore()
 const queryClient = useQueryClient()
 const me = useMe()
 const newCount = useNewLeadsCount()
+const todayCount = useTodayCount()
 const logout = useLogout()
 const menuOpen = ref(false)
 
@@ -78,6 +80,30 @@ async function onLogout(): Promise<void> {
             </RouterLink>
           </li>
           <li>
+            <RouterLink :to="{ name: 'bookings' }" class="shell__link">
+              <Icon name="calendar" />
+              <Text k="admin.nav.bookings" as="span" weight="medium" />
+              <Badge
+                v-if="(todayCount.data.value ?? 0) > 0"
+                k="admin.shell.todayBookings"
+                :args="{ count: todayCount.data.value }"
+                tone="accent"
+              />
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink :to="{ name: 'resources' }" class="shell__link">
+              <Icon name="user" />
+              <Text k="admin.nav.resources" as="span" weight="medium" />
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink :to="{ name: 'booking-settings' }" class="shell__link">
+              <Icon name="clock" />
+              <Text k="admin.nav.bookingSettings" as="span" weight="medium" />
+            </RouterLink>
+          </li>
+          <li>
             <RouterLink :to="{ name: 'account' }" class="shell__link">
               <Icon name="user" />
               <Text k="admin.nav.account" as="span" weight="medium" />
@@ -95,6 +121,28 @@ async function onLogout(): Promise<void> {
             <RouterLink :to="{ name: 'leads' }" class="shell__link" @click="menuOpen = false">
               <Icon name="inbox" />
               <Text k="admin.nav.leads" as="span" weight="medium" />
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink :to="{ name: 'bookings' }" class="shell__link" @click="menuOpen = false">
+              <Icon name="calendar" />
+              <Text k="admin.nav.bookings" as="span" weight="medium" />
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink :to="{ name: 'resources' }" class="shell__link" @click="menuOpen = false">
+              <Icon name="user" />
+              <Text k="admin.nav.resources" as="span" weight="medium" />
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink
+              :to="{ name: 'booking-settings' }"
+              class="shell__link"
+              @click="menuOpen = false"
+            >
+              <Icon name="clock" />
+              <Text k="admin.nav.bookingSettings" as="span" weight="medium" />
             </RouterLink>
           </li>
           <li>

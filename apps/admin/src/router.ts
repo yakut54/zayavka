@@ -19,6 +19,24 @@ export const routes: RouteRecordRaw[] = [
     meta: { shell: true },
   },
   {
+    path: '/bookings/:id?',
+    name: 'bookings',
+    component: () => import('./pages/BookingsPage.vue'),
+    meta: { shell: true },
+  },
+  {
+    path: '/resources/:id?',
+    name: 'resources',
+    component: () => import('./pages/ResourcesPage.vue'),
+    meta: { shell: true },
+  },
+  {
+    path: '/booking-settings',
+    name: 'booking-settings',
+    component: () => import('./pages/BookingSettingsPage.vue'),
+    meta: { shell: true },
+  },
+  {
     path: '/account',
     name: 'account',
     component: () => import('./pages/AccountPage.vue'),

@@ -38,6 +38,7 @@ class AdminBookingOut(BaseModel):
     source: str
     phone_source: str
     has_max: bool
+    is_demo: bool  # запись демо-пользователя (отрицательный id MAX)
     cancel_reason: str | None
     rescheduled_from_id: uuid.UUID | None
     anonymized_at: datetime | None

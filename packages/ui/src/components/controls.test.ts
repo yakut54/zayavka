@@ -253,6 +253,19 @@ describe('Textarea', () => {
 })
 
 describe('Select', () => {
+  it('пункт с text показывает готовую строку, без перевода', () => {
+    renderWithApp(Select, {
+      props: {
+        options: [
+          { value: 'a', text: 'Иван' },
+          { value: 'b', label: 'demo.action' },
+        ],
+      },
+    })
+    expect(screen.getByRole('option', { name: 'Иван' })).toBeTruthy()
+    expect(screen.getByRole('option', { name: 'Действие' })).toBeTruthy()
+  })
+
   const options = [
     { value: 'a', label: 'demo.option1' },
     { value: 'b', label: 'demo.option2' },

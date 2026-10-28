@@ -40,6 +40,15 @@ describe('toApiError', () => {
     })
   })
 
+  it('дополнительные поля тела доступны в body (список конфликтующих записей)', async () => {
+    const error = await toApiError(
+      json(409, { code: 'conflicts_with_bookings', bookings: [{ public_number: 5 }] }),
+    )
+    expect(error.body.bookings).toEqual([{ public_number: 5 }])
+    const plain = await toApiError(new Response('boom', { status: 502 }))
+    expect(plain.body).toEqual({})
+  })
+
   it('Retry-After попадает в retryAfter', async () => {
     const error = await toApiError(json(429, { code: 'rate_limited' }, { 'Retry-After': '90' }))
     expect(error.retryAfter).toBe(90)

@@ -166,6 +166,10 @@
             "title": "Id",
             "type": "string"
           },
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
           "phone_source": {
             "title": "Phone Source",
             "type": "string"
@@ -223,6 +227,7 @@
           "source",
           "phone_source",
           "has_max",
+          "is_demo",
           "cancel_reason",
           "rescheduled_from_id",
           "anonymized_at",

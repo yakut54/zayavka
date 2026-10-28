@@ -697,6 +697,8 @@ export interface components {
              * Format: uuid
              */
             id: string;
+            /** Is Demo */
+            is_demo: boolean;
             /** Phone Source */
             phone_source: string;
             /** Public Number */

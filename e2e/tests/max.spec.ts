@@ -17,15 +17,25 @@ async function expectNoViolations(page: Page): Promise<void> {
   ).toEqual([])
 }
 
+/** После выбора услуги: если сотрудников несколько, шаг «Специалист» проходим выбором «любой». */
+async function afterService(page: Page, resource = 'Любой свободный'): Promise<void> {
+  const heading = page.getByRole('heading', { name: /Выберите (дату|специалиста)/ })
+  await heading.waitFor()
+  if ((await heading.innerText()).includes('специалиста')) {
+    await page.locator('label.ui-card-select').filter({ hasText: resource }).click()
+    await page.getByRole('heading', { name: 'Выберите дату' }).waitFor()
+  }
+}
+
 async function openAs(page: Page, id: number, name = 'Анна'): Promise<void> {
   await installBridge(page, { id, first_name: name })
   await page.goto('/')
 }
 
 /** Услуга → (специалист пропускается: он один) → день по порядку → первое свободное время. */
-async function pickSlot(page: Page, dayIndex: number): Promise<void> {
+async function pickSlot(page: Page, dayIndex: number, resource?: string): Promise<void> {
   await page.locator('label.ui-card-select').filter({ hasText: 'Компьютерная диагностика' }).click()
-  await page.getByRole('heading', { name: 'Выберите дату' }).waitFor()
+  await afterService(page, resource)
   const days = page.locator('[role="option"]:not([aria-disabled="true"])')
   await days.nth(dayIndex).click()
   await page
@@ -76,8 +86,8 @@ test('2. Гонка: второй клиент получает «время з�
   }
   const first = await open()
   const second = await open()
-  await pickSlot(first.page, 2)
-  await pickSlot(second.page, 2)
+  await pickSlot(first.page, 2, 'Мастер E2E')
+  await pickSlot(second.page, 2, 'Мастер E2E')
   await fillContacts(first.page)
   await fillContacts(second.page)
   await first.page.getByRole('button', { name: 'Записаться' }).click()
@@ -129,6 +139,7 @@ test('5. Нет времени → заявка видна в админке с 
   const id = uniqueId()
   await openAs(page, id, 'Заявитель')
   await page.locator('label.ui-card-select').filter({ hasText: 'Компьютерная диагностика' }).click()
+  await afterService(page)
   await expect(page.getByText('Свободного времени нет')).toBeVisible()
   await page.getByRole('link', { name: 'Оставить заявку' }).click()
   await page.getByRole('textbox', { name: /Телефон/ }).pressSequentially('9990001122')
@@ -158,7 +169,7 @@ test('9. Вне MAX в демо-сборке: демо-вход и запись'
   await page.getByRole('button', { name: 'Продолжить' }).click()
   await expect(page.getByText('Демо', { exact: true })).toBeVisible()
   await page.locator('label.ui-card-select').filter({ hasText: 'Компьютерная диагностика' }).click()
-  await page.getByRole('heading', { name: 'Выберите дату' }).waitFor()
+  await afterService(page)
   await page.locator('[role="option"]:not([aria-disabled="true"])').nth(6).click()
   await page
     .getByRole('radio', { name: /^\d{2}:\d{2}$/ })
@@ -177,7 +188,7 @@ test('10. Доступность экранов на мобильном вьюп
   ).toBeVisible()
   await expectNoViolations(page)
   await page.locator('label.ui-card-select').filter({ hasText: 'Компьютерная диагностика' }).click()
-  await page.getByRole('heading', { name: 'Выберите дату' }).waitFor()
+  await afterService(page)
   await page.locator('[role="option"]:not([aria-disabled="true"])').nth(7).click()
   await page
     .getByRole('radio', { name: /^\d{2}:\d{2}$/ })

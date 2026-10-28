@@ -82,3 +82,51 @@ export async function messagesTo(userId: number): Promise<string[]> {
     )
     .map((r) => r.body?.text ?? '')
 }
+
+const API = `${MINIAPP_URL}/api/v1/max/app`
+
+export interface CreatedBooking {
+  id: string
+  public_number: number
+  starts_at: string
+  ends_at: string
+}
+
+/** Запись клиента напрямую через API мини-приложения (для сценариев админки). */
+export async function createMaxBooking(
+  user: { id: number; first_name: string },
+  resourceId: string,
+  options: { serviceSlug?: string; dayOffset?: number } = {},
+): Promise<CreatedBooking> {
+  const headers = { 'X-Max-Init-Data': signInitData(user), 'Content-Type': 'application/json' }
+  const service = options.serviceSlug ?? 'diagnostics'
+  const from = new Date().toISOString().slice(0, 10)
+  const to = new Date(Date.now() + 28 * 86_400_000).toISOString().slice(0, 10)
+  const daysUrl = `${API}/availability/days?service=${service}&resource=${resourceId}&from=${from}&to=${to}`
+  const days = (await (await fetch(daysUrl, { headers })).json()) as {
+    date: string
+    available: boolean
+  }[]
+  const day = days.filter((d) => d.available)[options.dayOffset ?? 0]
+  if (!day) throw new Error('нет свободных дней для записи')
+  const slotsUrl = `${API}/availability/slots?service=${service}&resource=${resourceId}&date=${day.date}`
+  const slots = (await (await fetch(slotsUrl, { headers })).json()) as {
+    slots: { starts_at: string }[]
+  }
+  const response = await fetch(`${API}/bookings`, {
+    method: 'POST',
+    headers: { ...headers, 'Idempotency-Key': crypto.randomUUID() },
+    body: JSON.stringify({
+      service_slug: service,
+      resource_id: resourceId,
+      starts_at: slots.slots[0]?.starts_at,
+      name: user.first_name,
+      phone: '+79991234567',
+      consent: true,
+      policy_version: '2026-10-20',
+    }),
+  })
+  if (!response.ok)
+    throw new Error(`запись не создана: ${response.status} ${await response.text()}`)
+  return (await response.json()) as CreatedBooking
+}

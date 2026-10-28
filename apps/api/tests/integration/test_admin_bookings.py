@@ -5,6 +5,7 @@ from typing import Any
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app.settings import Settings
@@ -767,3 +768,20 @@ async def test_export_csv_errors(client: AsyncClient, admin: uuid.UUID) -> None:
         assert r.status_code == 405, method
     anonymous = await client.get(f"{B}/export.csv", headers={"Cookie": ""})
     assert anonymous.status_code in (401, 403)
+
+
+async def test_demo_bookings_are_marked_and_exported_as_demo(
+    client: AsyncClient, engine: AsyncEngine, admin: uuid.UUID
+) -> None:
+    rid = await seed_resource(engine)
+    uid = await max_booking(client, at(10), rid)
+    real = (await client.get(f"{B}/{uid}")).json()["booking"]
+    assert real["has_max"] is True and real["is_demo"] is False
+    async with engine.begin() as connection:
+        await connection.execute(
+            text("UPDATE bookings SET max_user_id = -7 WHERE id = :id"), {"id": uid}
+        )
+    demo = (await client.get(f"{B}/{uid}")).json()["booking"]
+    assert demo["has_max"] is True and demo["is_demo"] is True
+    export = (await client.get(f"{B}/export.csv")).content.decode("utf-8")
+    assert ";Демо;" in export

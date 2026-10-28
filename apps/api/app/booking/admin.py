@@ -76,7 +76,7 @@ STATUS_LABELS = {
     BookingStatus.NO_SHOW: "Не пришёл",
     BookingStatus.RESCHEDULED: "Перенесена",
 }
-SOURCE_LABELS = {"max": "MAX", "admin": "Админка", "demo": "Демо"}
+SOURCE_LABELS = {"max": "MAX", "admin": "Админка"}
 CSV_PAGE_SIZE = 100
 SCHEDULE_CHANGE_REASON = "Изменение графика"
 Clock = Callable[[], datetime]
@@ -101,6 +101,7 @@ def booking_out(booking: Booking, resource: Resource) -> AdminBookingOut:
         source=booking.source,
         phone_source=booking.phone_source,
         has_max=booking.max_user_id is not None,
+        is_demo=booking.max_user_id is not None and booking.max_user_id < 0,
         cancel_reason=booking.cancel_reason,
         rescheduled_from_id=booking.rescheduled_from_id,
         anonymized_at=booking.anonymized_at,
@@ -224,7 +225,7 @@ class BookingAdminService:
             item.service.title,
             item.client_name,
             format_phone(item.client_phone_e164),
-            SOURCE_LABELS.get(item.source, item.source),
+            "Демо" if item.is_demo else SOURCE_LABELS.get(item.source, item.source),
             STATUS_LABELS[item.status],
             item.comment or "",
         ]

@@ -11,7 +11,9 @@ defineOptions({ inheritAttrs: false })
 
 export interface SelectOption {
   value: string
-  label: MessageKey
+  /** Ключ словаря; для данных, которые не переводятся (имя сотрудника, время), — `text`. */
+  label?: MessageKey
+  text?: string
 }
 
 const props = withDefaults(
@@ -67,7 +69,7 @@ const { rootAttrs, innerAttrs: selectAttrs } = useSplitAttrs()
         :value="option.value"
         :selected="option.value === modelValue"
       >
-        {{ t(option.label) }}
+        {{ option.text ?? (option.label ? t(option.label) : '') }}
       </option>
     </select>
     <Icon name="chevron-down" class="ui-select__chevron" />

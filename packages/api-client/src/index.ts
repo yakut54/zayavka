@@ -18,6 +18,8 @@ export class ApiError extends Error {
   /** Секунды из заголовка Retry-After (429). */
   readonly retryAfter: number | undefined
   readonly requestId: string | undefined
+  /** Тело ответа целиком: у части ошибок есть дополнительные поля (`bookings` при конфликте графика). */
+  readonly body: Record<string, unknown>
 
   constructor(init: {
     status: number
@@ -25,6 +27,7 @@ export class ApiError extends Error {
     errors?: ApiFieldError[]
     retryAfter?: number
     requestId?: string
+    body?: Record<string, unknown>
   }) {
     super(`${init.status} ${init.code}`)
     this.name = 'ApiError'
@@ -33,6 +36,7 @@ export class ApiError extends Error {
     this.errors = init.errors ?? []
     this.retryAfter = init.retryAfter
     this.requestId = init.requestId
+    this.body = init.body ?? {}
   }
 }
 
@@ -89,6 +93,7 @@ export async function toApiError(response: Response): Promise<ApiError> {
     errors: body?.errors ?? [],
     ...(Number.isFinite(retry) && retry > 0 ? { retryAfter: retry } : {}),
     ...(body?.request_id ? { requestId: body.request_id } : {}),
+    ...(body ? { body: body as Record<string, unknown> } : {}),
   })
 }
 
