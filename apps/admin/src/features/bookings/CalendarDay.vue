@@ -23,6 +23,9 @@ const FALLBACK_RANGE: [number, number] = [8 * HOUR, 20 * HOUR]
 const calendar = useCalendarQuery(() => props.date)
 const settings = useSettingsQuery()
 
+const working = computed(
+  () => (calendar.data.value?.working ?? {}) as Record<string, [number, number][]>,
+)
 const step = computed(() => settings.data.value?.slot_step_min ?? 15)
 const resources = computed(() => (calendar.data.value?.resources ?? []).filter((r) => r.is_active))
 
@@ -66,7 +69,7 @@ const shown = computed(() =>
 const range = computed<[number, number]>(() => {
   const marks: number[] = []
   for (const id of visibleResources.value.map((r) => r.id)) {
-    for (const [from, to] of calendar.data.value?.working[id] ?? []) marks.push(from, to)
+    for (const [from, to] of working.value[id] ?? []) marks.push(from, to)
   }
   for (const b of shown.value) {
     marks.push(minutesOfDay(b.starts_at, tz), minutesOfDay(b.ends_at, tz) || DAY_END)
@@ -98,7 +101,7 @@ const events = computed<GridEvent[]>(() =>
 const unavailable = computed<GridRange[]>(() => {
   const [from, to] = range.value
   return visibleResources.value.flatMap((r) => {
-    const work = [...(calendar.data.value?.working[r.id] ?? [])].sort((a, b) => a[0] - b[0])
+    const work = [...(working.value[r.id] ?? [])].sort((a, b) => a[0] - b[0])
     const blocks: GridRange[] = []
     let cursor = from
     for (const [start, end] of work) {

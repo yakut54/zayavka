@@ -912,10 +912,7 @@ export interface components {
             resources: components["schemas"]["ResourceAdminOut"][];
             /** Working */
             working: {
-                [key: string]: [
-                    number,
-                    number
-                ][];
+                [key: string]: number[][];
             };
         };
         /** CancelRequest */
@@ -1362,20 +1359,14 @@ export interface components {
         WorkingHoursBody: {
             /** Days */
             days: {
-                [key: string]: [
-                    number,
-                    number
-                ][];
+                [key: string]: number[][];
             };
         };
         /** WorkingHoursOut */
         WorkingHoursOut: {
             /** Days */
             days: {
-                [key: string]: [
-                    number,
-                    number
-                ][];
+                [key: string]: number[][];
             };
         };
     };

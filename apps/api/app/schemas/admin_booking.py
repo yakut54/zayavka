@@ -10,6 +10,7 @@ from pydantic import (
     StrictBool,
     StringConstraints,
     ValidationInfo,
+    WithJsonSchema,
     field_validator,
 )
 
@@ -19,7 +20,11 @@ from app.schemas.common import InputModel
 from app.schemas.max_app import ResourceRef, ServiceRef
 
 Phone = Annotated[str, StringConstraints(max_length=32)]
-Minutes = tuple[int, int]
+# JSON Schema 3.1 не принимает список в `items`, который pydantic строит для кортежа
+Minutes = Annotated[
+    tuple[int, int],
+    WithJsonSchema({"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2}),
+]
 Version = Annotated[int, Field(ge=1, le=2_147_483_647, strict=True)]
 SortOrder = Annotated[int, Field(ge=-10_000, le=10_000, strict=True)]
 

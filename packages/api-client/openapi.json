@@ -765,16 +765,11 @@
           "working": {
             "additionalProperties": {
               "items": {
+                "items": {
+                  "type": "integer"
+                },
                 "maxItems": 2,
                 "minItems": 2,
-                "prefixItems": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "integer"
-                  }
-                ],
                 "type": "array"
               },
               "type": "array"
@@ -1988,16 +1983,11 @@
           "days": {
             "additionalProperties": {
               "items": {
+                "items": {
+                  "type": "integer"
+                },
                 "maxItems": 2,
                 "minItems": 2,
-                "prefixItems": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "integer"
-                  }
-                ],
                 "type": "array"
               },
               "type": "array"
@@ -2017,16 +2007,11 @@
           "days": {
             "additionalProperties": {
               "items": {
+                "items": {
+                  "type": "integer"
+                },
                 "maxItems": 2,
                 "minItems": 2,
-                "prefixItems": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "type": "integer"
-                  }
-                ],
                 "type": "array"
               },
               "type": "array"
