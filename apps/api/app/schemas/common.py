@@ -1,7 +1,11 @@
 import re
-from typing import Any
+from datetime import date
+from typing import Annotated, Any
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, BeforeValidator, field_validator
+
+ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+MIN_YEAR, MAX_YEAR = 1970, 2200  # за пределами перевод в UTC и в метку времени ломается
 
 _UNSAFE = re.compile("[\x00\ud800-\udfff]")
 
@@ -26,3 +30,17 @@ class InputModel(BaseModel):
                 if isinstance(item, str):
                     reject_unsafe_text(item)
         return value
+
+
+def _iso_date_only(value: object) -> object:
+    """Только YYYY-MM-DD: pydantic иначе принял бы число как unix-время (`date_to=0`)."""
+    if (
+        isinstance(value, str)
+        and ISO_DATE.fullmatch(value)
+        and MIN_YEAR <= int(value[:4]) <= MAX_YEAR
+    ):
+        return value
+    raise ValueError("expected YYYY-MM-DD")
+
+
+IsoDate = Annotated[date, BeforeValidator(_iso_date_only)]

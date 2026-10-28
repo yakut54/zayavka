@@ -1,12 +1,10 @@
-import re
 import uuid
-from datetime import date
 from typing import Annotated
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
-from pydantic import AfterValidator, BeforeValidator
+from pydantic import AfterValidator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth_deps import CsrfAdmin, CurrentAdmin, get_settings_dep
@@ -22,13 +20,10 @@ from app.schemas.admin_leads import (
     LeadStatusUpdate,
     NoteCreate,
 )
-from app.schemas.common import reject_unsafe_text
+from app.schemas.common import IsoDate, reject_unsafe_text
 from app.schemas.problem import problem_responses
 from app.services.admin_leads import AdminLeadService, export_filename
 from app.settings import Settings
-
-ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
-MIN_YEAR, MAX_YEAR = 1970, 2200  # за пределами перевод в UTC и в метку времени ломается
 
 
 def _safe_q(value: str | None) -> str | None:
@@ -54,20 +49,6 @@ def get_service(
 
 
 Service = Annotated[AdminLeadService, Depends(get_service)]
-
-
-def _iso_date_only(value: object) -> object:
-    """Только YYYY-MM-DD: pydantic иначе принял бы число как unix-время (`date_to=0`)."""
-    if (
-        isinstance(value, str)
-        and ISO_DATE.fullmatch(value)
-        and MIN_YEAR <= int(value[:4]) <= MAX_YEAR
-    ):
-        return value
-    raise ValueError("expected YYYY-MM-DD")
-
-
-IsoDate = Annotated[date, BeforeValidator(_iso_date_only)]
 
 
 def get_filters(

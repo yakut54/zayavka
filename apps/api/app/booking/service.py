@@ -639,6 +639,71 @@ class BookingService:
         except (_IdempotencyRace, SlotTaken) as race:
             return await self._existing_after_race(max_user_id, idempotency_key, race)
 
+    # ---------- перенос администратором ----------
+
+    async def admin_reschedule(
+        self,
+        booking_id: uuid.UUID,
+        *,
+        starts_at: datetime,
+        resource_id: uuid.UUID | None,
+        version: int,
+        notify_client: bool,
+        actor_user_id: uuid.UUID,
+    ) -> BookingResult:
+        """Перенос без проверки срока отмены и ближайшего времени: решает человек."""
+        async with self._sessionmaker() as session:
+            snapshot = await repo.get_booking(session, booking_id)
+        if snapshot is None:
+            raise BookingNotFound
+        service = self.bookable(snapshot.service_slug)
+
+        async def attempt(session: AsyncSession) -> BookingResult:
+            old = await repo.get_booking(session, booking_id, for_update=True)
+            if old is None:
+                raise BookingNotFound
+            if old.status != BookingStatus.CONFIRMED:
+                raise BookingNotActive
+            if old.version != version:
+                raise VersionConflict("Запись уже изменили")
+            now = self._clock()
+            await repo.set_status(session, old, BookingStatus.RESCHEDULED, now=now)
+            await repo.cancel_pending_outbox(session, old.id)
+            booking, resource = await self._insert(
+                session,
+                service=service,
+                resource_id=resource_id,
+                starts_at=starts_at,
+                now=now,
+                ignore_lead_time=True,
+                client=Client(
+                    name=old.client_name,
+                    phone=old.client_phone_e164,
+                    phone_source=old.phone_source,
+                    max_user_id=old.max_user_id,
+                    comment=old.comment,
+                ),
+                phone=old.client_phone_e164,
+                source=old.source,
+                consent_id=old.consent_id,
+                idempotency_key=None,
+                rescheduled_from=old,
+                actor=BookingActor.ADMIN,
+                actor_user_id=actor_user_id,
+                notify_client=notify_client,
+            )
+            await repo.add_event(
+                session,
+                booking_id=old.id,
+                type_=BookingEventType.RESCHEDULED,
+                actor=BookingActor.ADMIN,
+                actor_user_id=actor_user_id,
+                payload={"to": str(booking.id)},
+            )
+            return BookingResult(booking, resource, created=True)
+
+        return await self._run(service, resource_id, starts_at, True, attempt)
+
 
 class _IdempotencyRace(Exception):
     """Параллельный запрос с тем же Idempotency-Key уже создал запись."""

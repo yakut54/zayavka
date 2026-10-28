@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.booking.admin import BookingAdminService
 from app.booking.service import BookingService
 from app.catalog import load_business, load_catalog
 from app.db import create_engine, create_sessionmaker
@@ -11,7 +12,16 @@ from app.errors import install_error_handlers
 from app.logging import configure_logging
 from app.max.auth import MaxAuthenticator
 from app.middleware import AccessLogMiddleware, RequestIdMiddleware
-from app.routes import admin_auth, admin_leads, health, max_app, max_webhook, public_leads
+from app.routes import (
+    admin_auth,
+    admin_bookings,
+    admin_leads,
+    admin_resources,
+    health,
+    max_app,
+    max_webhook,
+    public_leads,
+)
 from app.services.notifications import load_service_titles
 from app.settings import Settings, get_settings
 
@@ -32,6 +42,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             settings,
             catalog=app.state.catalog,
             consent_text_sha256=consent_text_sha256(),
+        )
+        app.state.booking_admin = BookingAdminService(
+            app.state.sessionmaker,
+            settings,
+            bookings=app.state.booking_service,
+            catalog=app.state.catalog,
         )
         try:
             yield
@@ -59,6 +75,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(public_leads.router, prefix=API_PREFIX)
     app.include_router(admin_auth.router, prefix=API_PREFIX)
     app.include_router(admin_leads.router, prefix=API_PREFIX)
+    app.include_router(admin_bookings.router, prefix=API_PREFIX)
+    app.include_router(admin_resources.router, prefix=API_PREFIX)
     app.include_router(max_app.router, prefix=API_PREFIX)
     app.include_router(max_webhook.router, prefix=API_PREFIX)
     return app
