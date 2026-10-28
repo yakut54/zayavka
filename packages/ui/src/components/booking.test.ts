@@ -204,7 +204,7 @@ describe('DateStrip', () => {
     const { container } = mount('2030-01-09')
     expect(screen.getByRole('listbox').getAttribute('aria-label')).toBe('Подпись')
     const options = screen.getAllByRole('option')
-    expect(options[0]?.getAttribute('aria-label')).toBe('понедельник, 7 января')
+    expect(options[0]?.getAttribute('aria-label')).toBe('пн 7, понедельник, 7 января')
     expect(options.map((o) => o.getAttribute('aria-selected'))).toEqual([
       'false',
       'false',

@@ -90,7 +90,7 @@ function onTrackClick(event: MouseEvent, columnId: string): void {
           </span>
         </div>
         <div class="ui-timegrid__body">
-          <div class="ui-timegrid__gutter" aria-hidden="true">
+          <div class="ui-timegrid__gutter">
             <span
               v-for="mark in hours"
               :key="mark.minute"
@@ -110,7 +110,6 @@ function onTrackClick(event: MouseEvent, columnId: string): void {
               v-for="(block, index) in byColumn(column).blocks"
               :key="`u${index}`"
               class="ui-timegrid__off"
-              aria-hidden="true"
               :style="{
                 '--top': toRows(block.startMin),
                 '--span': toRows(block.endMin) - toRows(block.startMin),
@@ -120,7 +119,6 @@ function onTrackClick(event: MouseEvent, columnId: string): void {
               <div
                 v-if="event.bufferMin"
                 class="ui-timegrid__buffer"
-                aria-hidden="true"
                 :style="{ '--top': toRows(event.endMin), '--span': event.bufferMin / step }"
               />
               <button
@@ -135,6 +133,7 @@ function onTrackClick(event: MouseEvent, columnId: string): void {
               >
                 <slot name="event" :event="event">
                   <span class="ui-timegrid__event-title">{{ event.title }}</span>
+                  {{ ' ' }}
                   <span v-if="event.subtitle" class="ui-timegrid__event-sub">{{
                     event.subtitle
                   }}</span>

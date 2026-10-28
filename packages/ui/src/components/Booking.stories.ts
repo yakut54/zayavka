@@ -182,7 +182,7 @@ const events: GridEvent[] = [
     bufferMin: 15,
     title: 'Шиномонтаж',
     subtitle: 'Анна',
-    label: '10:00–10:45, Шиномонтаж, Анна',
+    label: 'Шиномонтаж Анна, 10:00–10:45',
   },
   {
     id: '2',
@@ -192,7 +192,7 @@ const events: GridEvent[] = [
     bufferMin: 15,
     title: 'Диагностика',
     subtitle: 'Олег',
-    label: '12:00–13:00, Диагностика, Олег',
+    label: 'Диагностика Олег, 12:00–13:00',
     tone: 'success',
   },
   {
@@ -202,7 +202,7 @@ const events: GridEvent[] = [
     endMin: 750,
     title: 'Масло',
     subtitle: 'Не пришёл',
-    label: '11:00–12:30, Масло, Не пришёл',
+    label: 'Масло Не пришёл, 11:00–12:30',
     tone: 'danger',
   },
 ]

@@ -102,12 +102,13 @@ watch(() => props.modelValue, revealSelected)
       class="ui-date-strip__day"
       :aria-selected="day.date === modelValue"
       :aria-disabled="!day.available"
-      :aria-label="fullFormat.format(asDate(day.date))"
+      :aria-label="`${weekdayFormat.format(asDate(day.date))} ${dayFormat.format(asDate(day.date))}, ${fullFormat.format(asDate(day.date))}`"
       :tabindex="tabbable() === index ? 0 : -1"
       @click="select(day)"
       @keydown="onKeydown($event, index)"
     >
       <span class="ui-date-strip__weekday">{{ weekdayFormat.format(asDate(day.date)) }}</span>
+      {{ ' ' }}
       <span class="ui-date-strip__number">{{ dayFormat.format(asDate(day.date)) }}</span>
     </button>
   </div>
