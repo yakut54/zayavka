@@ -14,7 +14,7 @@
     "i18n:check": "pnpm --filter @app/i18n i18n:check"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.0.0",
+    "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^20.0.0",
     "@eslint/js": "^10.0.1",
     "@lhci/cli": "^0.15.1",
