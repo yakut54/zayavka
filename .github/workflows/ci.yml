@@ -2,14 +2,73 @@ name: ci
 
 on:
   push:
-  pull_request:
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # Какие области затронул пуш (сравнение с предыдущим состоянием ветки).
+  changes:
+    runs-on: ubuntu-24.04
+    outputs:
+      api: ${{ steps.f.outputs.api }}
+      web: ${{ steps.f.outputs.web }}
+      storybook: ${{ steps.f.outputs.storybook }}
+      contract: ${{ steps.f.outputs.contract }}
+      e2e: ${{ steps.f.outputs.e2e }}
+      lighthouse: ${{ steps.f.outputs.lighthouse }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: f
+        with:
+          filters: |
+            api:
+              - 'apps/api/**'
+              - 'scripts/uv.sh'
+              - '.github/workflows/ci.yml'
+            web:
+              - 'apps/site/**'
+              - 'apps/admin/**'
+              - 'packages/**'
+              - 'docs/**'
+              - '*.md'
+              - '*.js'
+              - '*.cjs'
+              - 'package.json'
+              - 'pnpm-*.yaml'
+              - '.github/workflows/ci.yml'
+            storybook:
+              - 'packages/**'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/ci.yml'
+            contract:
+              - 'apps/api/**'
+              - 'infra/**'
+              - 'scripts/contract.sh'
+              - 'scripts/uv.sh'
+              - '.github/workflows/ci.yml'
+            e2e:
+              - 'apps/**'
+              - 'packages/**'
+              - 'e2e/**'
+              - 'infra/**'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/ci.yml'
+            lighthouse:
+              - 'apps/site/**'
+              - 'apps/admin/**'
+              - 'apps/api/**'
+              - 'packages/**'
+              - 'infra/**'
+              - 'lighthouserc.cjs'
+              - 'pnpm-lock.yaml'
+              - '.github/workflows/ci.yml'
+
   api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
     runs-on: ubuntu-24.04
     defaults: { run: { working-directory: apps/api } }
     steps:
@@ -23,22 +82,33 @@ jobs:
       - run: uv run pip-audit
 
   web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
     runs-on: ubuntu-24.04
+    env:
+      BEFORE: ${{ github.event.before }}
     steps:
       - uses: actions/checkout@v7
+        with: { fetch-depth: 0 }
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with: { node-version: 24, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
-      - run: pnpm -r --if-present typecheck
-      - run: pnpm -r --if-present test
+      - name: typecheck и тесты только изменённых пакетов и зависящих от них
+        run: |
+          BASE="$BEFORE"
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then BASE="HEAD~1"; fi
+          pnpm -r --if-present --filter "...[$BASE]" typecheck
+          pnpm -r --if-present --filter "...[$BASE]" test
       - run: pnpm i18n:check
       - run: pnpm --filter @app/site build && pnpm --filter @app/site budget
       - run: pnpm --filter @app/admin build
       - run: pnpm audit --prod
 
   storybook:
+    needs: changes
+    if: needs.changes.outputs.storybook == 'true'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -51,6 +121,8 @@ jobs:
       - run: pnpm --filter @app/ui test-storybook:ci
 
   contract:
+    needs: changes
+    if: needs.changes.outputs.contract == 'true'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -66,6 +138,8 @@ jobs:
         run: docker compose -p zayavka-test -f infra/compose.test.yml down -v
 
   e2e:
+    needs: changes
+    if: needs.changes.outputs.e2e == 'true'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -85,6 +159,8 @@ jobs:
         run: docker compose -p zayavka-test -f infra/compose.test.yml down -v
 
   lighthouse:
+    needs: changes
+    if: needs.changes.outputs.lighthouse == 'true'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
