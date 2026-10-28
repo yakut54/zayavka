@@ -9,6 +9,8 @@ const SOURCE_DIRS = [
   'apps/site/src',
   'apps/site/site.config.ts',
   'apps/admin/src',
+  'apps/max-app/src',
+  'apps/max-app/max.config.ts',
   'packages/ui/src',
   'packages/ui/.storybook',
   'e2e',

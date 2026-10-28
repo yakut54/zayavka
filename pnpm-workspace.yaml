@@ -1,5 +1,6 @@
 packages:
   - apps/site
   - apps/admin
+  - apps/max-app
   - packages/*
   - e2e

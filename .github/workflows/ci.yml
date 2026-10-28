@@ -31,6 +31,7 @@ jobs:
             web:
               - 'apps/site/**'
               - 'apps/admin/**'
+              - 'apps/max-app/**'
               - 'packages/**'
               - 'docs/**'
               - '*.md'
@@ -104,6 +105,7 @@ jobs:
       - run: pnpm i18n:check
       - run: pnpm --filter @app/site build && pnpm --filter @app/site budget
       - run: pnpm --filter @app/admin build
+      - run: pnpm --filter @app/max-app build && pnpm --filter @app/max-app check-bundle
       - run: pnpm audit --prod
 
   storybook:
