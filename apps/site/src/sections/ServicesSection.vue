@@ -3,8 +3,10 @@ import { Button, Container, Grid, Heading, Icon, Section, Stack, Surface, Text }
 
 import siteConfig from '../../site.config'
 import { chooseService } from '../composables/useLeadFormBus'
+import { buildMaxBotLink, serviceStartParam } from '../composables/maxLink'
 
 const services = siteConfig.services
+const bookingEnabled = siteConfig.max.bookingEnabled
 const price = new Intl.NumberFormat('ru-RU')
 // 4 карточки в одну строку на широком экране, иначе три колонки по ТЗ
 const lgCols = services.length === 4 ? 4 : 3
@@ -29,11 +31,18 @@ const lgCols = services.length === 4 ? 4 : 3
                   as="p"
                 />
               </Stack>
-              <Button
-                label="site.services.choose"
-                variant="ghost"
-                @click="chooseService(service.slug)"
-              />
+              <div class="service-card__actions">
+                <Button
+                  v-if="bookingEnabled && service.bookable"
+                  label="site.services.book"
+                  :href="buildMaxBotLink(serviceStartParam(service.slug))"
+                />
+                <Button
+                  label="site.services.choose"
+                  variant="ghost"
+                  @click="chooseService(service.slug)"
+                />
+              </div>
             </Surface>
           </li>
         </Grid>
@@ -53,6 +62,12 @@ const lgCols = services.length === 4 ? 4 : 3
   justify-content: space-between;
   gap: var(--space-4);
   width: 100%;
+}
+
+.service-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .service-card__icon {

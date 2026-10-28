@@ -1,5 +1,6 @@
 # Окружение для e2e (ТЗ-1 §5.1, §17.4): отдельная БД, Mailpit, API, воркер и Caddy со статикой.
-# Перед запуском соберите статику: pnpm --filter @app/site build && pnpm --filter @app/admin build
+# Перед запуском соберите статику (мини-приложение — демо-сборкой для e2e):
+#   pnpm --filter @app/site build && pnpm --filter @app/admin build && VITE_DEMO=true pnpm --filter @app/max-app build
 name: zayavka-test
 
 x-api-env: &api-env
@@ -8,6 +9,12 @@ x-api-env: &api-env
   SECRET_KEY: e2e-secret-key-e2e-secret-key-e2e-secret-key-0123456789abcd
   SITE_ORIGIN: http://localhost:8080
   ADMIN_ORIGIN: http://localhost:8081
+  MINIAPP_ORIGIN: http://localhost:8082
+  MAX_BOT_TOKEN: e2e-bot-token-e2e-bot-token
+  MAX_DEMO_BOT_TOKEN: e2e-demo-token-e2e-demo-token
+  MAX_DEMO_BRIDGE: 'true'
+  MAX_WEBHOOK_SECRET: e2e-webhook-secret
+  MAX_API_BASE: http://max-stub:9000
   NOTIFY_EMAILS: owner@example.ru
   PRIVACY_POLICY_VERSION: '2026-10-20'
   SMTP_HOST: mailpit
@@ -28,6 +35,22 @@ services:
     image: axllent/mailpit
     ports: ['127.0.0.1:18025:8025']
     healthcheck: { test: ['CMD', '/mailpit', 'readyz'], interval: 2s, retries: 30 }
+
+  max-stub:
+    build: ../apps/api
+    command: ['python', '/stub/server.py']
+    volumes: ['../e2e/max-api-stub:/stub:ro']
+    ports: ['127.0.0.1:19000:9000']
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:9000/__requests').status==200 else 1)",
+        ]
+      interval: 2s
+      retries: 30
 
   migrate:
     build: ../apps/api
@@ -66,12 +89,14 @@ services:
     environment:
       SITE_ADDR: ':8080'
       ADMIN_ADDR: ':8081'
+      MINIAPP_ADDR: ':8082'
       AUTO_HTTPS: 'off'
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ../apps/site/dist:/srv/site:ro
       - ../apps/admin/dist:/srv/admin:ro
-    ports: ['127.0.0.1:8080:8080', '127.0.0.1:8081:8081']
+      - ../apps/max-app/dist:/srv/max-app:ro
+    ports: ['127.0.0.1:8080:8080', '127.0.0.1:8081:8081', '127.0.0.1:8082:8082']
     depends_on:
       api: { condition: service_healthy }
     healthcheck:

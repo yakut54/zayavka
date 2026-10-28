@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process'
 
 import { ADMIN_EMAIL, ADMIN_PASSWORD, COMPOSE, MAILPIT_URL } from './env'
+import { seedResource } from './seed'
 
 /** Перед прогоном: окружение должно быть поднято, в нём создаётся тестовый администратор. */
 export default async function globalSetup(): Promise<void> {
@@ -33,5 +34,6 @@ export default async function globalSetup(): Promise<void> {
     const stderr = String((error as { stderr?: Buffer }).stderr ?? '')
     if (!stderr.includes('уже существует')) throw error
   }
+  await seedResource()
   await fetch(`${MAILPIT_URL}/api/v1/messages`, { method: 'DELETE' })
 }

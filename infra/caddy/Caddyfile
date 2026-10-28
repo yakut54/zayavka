@@ -1,6 +1,6 @@
 # Один Caddyfile для test и prod: адреса и auto_https задаются переменными окружения.
-#   test: SITE_ADDR=:8080 ADMIN_ADDR=:8081 AUTO_HTTPS=off
-#   prod: SITE_ADDR=example.ru ADMIN_ADDR=admin.example.ru (HTTPS автоматически)
+#   test: SITE_ADDR=:8080 ADMIN_ADDR=:8081 MINIAPP_ADDR=:8082 AUTO_HTTPS=off
+#   prod: SITE_ADDR=example.ru ADMIN_ADDR=admin.example.ru MINIAPP_ADDR=max.example.ru (HTTPS автоматически)
 {
 	admin off
 	auto_https {$AUTO_HTTPS:on}
@@ -54,6 +54,25 @@
 	import caching
 	header Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
 	header X-Robots-Tag "noindex, nofollow"
+
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}
+
+# Мини-приложение MAX: мост подключается скриптом st.max.ru, открывается во встроенном окне MAX.
+# frame-ancestors начальный — сверить на веб-версии и desktop-клиенте MAX и сузить (ТЗ-2 §10.2).
+{$MINIAPP_ADDR::8082} {
+	root * /srv/max-app
+	encode zstd gzip
+	import common_headers
+	import caching
+	header Content-Security-Policy "default-src 'self'; script-src 'self' https://st.max.ru; connect-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; frame-ancestors 'self' https://*.max.ru; base-uri 'self'; form-action 'self'"
+	header X-Robots-Tag "noindex"
 
 	handle /api/* {
 		reverse_proxy api:8000

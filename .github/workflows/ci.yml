@@ -151,6 +151,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @app/e2e exec playwright install --with-deps chromium webkit
       - run: pnpm --filter @app/site build && pnpm --filter @app/admin build
+      - run: VITE_DEMO=true pnpm --filter @app/max-app build
       - run: docker compose -p zayavka-test -f infra/compose.test.yml up -d --build --wait
       - run: pnpm --filter @app/e2e run e2e
         env: { CI: 'true', E2E_WEBKIT: '1' }

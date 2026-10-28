@@ -15,6 +15,7 @@ import { useI18n } from 'vue-i18n'
 
 import siteConfig from '../../site.config'
 import { scrollToLeadForm } from '../composables/useLeadFormBus'
+import { buildMaxBotLink } from '../composables/maxLink'
 import hero1200Avif from '../assets/generated/hero-1200.avif?url'
 import hero1200Jpg from '../assets/generated/hero-1200.jpg?url'
 import hero1200Webp from '../assets/generated/hero-1200.webp?url'
@@ -25,6 +26,7 @@ import hero960Webp from '../assets/generated/hero-960.webp?url'
 
 const { t } = useI18n()
 const phoneHref = `tel:${siteConfig.contacts.phoneE164}`
+const bookingEnabled = siteConfig.max.bookingEnabled
 const phoneText = formatPhone(siteConfig.contacts.phoneE164.replace(/\D/g, ''))
 const sizes = '(min-width: 1024px) 560px, (min-width: 768px) 50vw, 100vw'
 
@@ -53,6 +55,14 @@ useHead({
           <Inline :gap="3" wrap>
             <Button label="nav.cta" size="lg" @click="scrollToLeadForm" />
             <Button
+              v-if="bookingEnabled"
+              label="nav.book"
+              size="lg"
+              variant="secondary"
+              :href="buildMaxBotLink()"
+            />
+            <Button
+              v-else
               label="nav.call"
               size="lg"
               variant="secondary"

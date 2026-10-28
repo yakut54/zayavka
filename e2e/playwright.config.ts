@@ -1,7 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
 /**
- * E2E против compose.test.yml: сайт — :8080, админка — :8081, Mailpit API — :18025.
+ * E2E против compose.test.yml: сайт — :8080, админка — :8081, мини-приложение — :8082,
+ * Mailpit API — :18025, заглушка Bot API MAX — :19000.
  * PW_CHANNEL=chrome — использовать установленный Chrome; E2E_WEBKIT=1 — добавить WebKit (CI).
  */
 const channel = process.env.PW_CHANNEL
@@ -27,12 +28,17 @@ export default defineConfig({
     {
       name: 'desktop',
       use: { ...devices['Desktop Chrome'], ...chromium },
-      testIgnore: /.*.mobile.spec.ts/,
+      testIgnore: [/.*.mobile.spec.ts/, /max.spec.ts/],
     },
     {
       name: 'mobile',
       use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, ...chromium },
       testMatch: /.*\.mobile\.spec\.ts/,
+    },
+    {
+      name: 'max',
+      use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 }, ...chromium },
+      testMatch: /max.spec.ts/,
     },
     ...(process.env.E2E_WEBKIT
       ? [{ name: 'webkit', use: { ...devices['Desktop Safari'] }, testMatch: /site\.spec\.ts/ }]
