@@ -25,6 +25,11 @@ describe('Button', () => {
     expect(submitted).toBe(true)
   })
 
+  it('подставляет аргументы в подпись', () => {
+    renderWithApp(Button, { props: { label: 'demo.greeting', args: { name: 'Анна' } } })
+    expect(screen.getByRole('button').textContent).toContain('Анна')
+  })
+
   it('эмитит click', async () => {
     const { emitted } = renderWithApp(Button, { props: { label: 'demo.action' } })
     await fireEvent.click(screen.getByRole('button'))

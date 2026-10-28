@@ -181,6 +181,22 @@ describe('Dialog', () => {
     expect(dialog.textContent).toContain('Действие нельзя будет отменить')
   })
 
+  it('подставляет аргументы в заголовок и описание', () => {
+    renderWithApp(Dialog, {
+      props: {
+        ...props,
+        open: true,
+        title: 'demo.greeting',
+        titleArgs: { name: 'Олег' },
+        description: 'demo.greeting',
+        descriptionArgs: { name: 'Нина' },
+      },
+    })
+    const dialog = document.querySelector('dialog') as HTMLDialogElement
+    expect(dialog.textContent).toContain('Олег')
+    expect(dialog.textContent).toContain('Нина')
+  })
+
   it('закрывается при open=false', async () => {
     const { rerender } = renderWithApp(Dialog, { props: { ...props, open: true } })
     const dialog = document.querySelector('dialog') as HTMLDialogElement

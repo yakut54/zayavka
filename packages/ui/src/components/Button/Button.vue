@@ -61,7 +61,14 @@ function onClick(event: MouseEvent): void {
     <span class="ui-button__content">
       <Icon v-if="iconStart" :name="iconStart" size="md" />
       <Icon v-if="iconOnly" :name="iconOnly" size="md" />
-      <Text v-if="label" :k="label" variant="label" as="span" class="ui-button__label" />
+      <Text
+        v-if="label"
+        :k="label"
+        :args="args"
+        variant="label"
+        as="span"
+        class="ui-button__label"
+      />
       <Icon v-if="iconEnd" :name="iconEnd" size="md" />
     </span>
     <span v-if="loading" class="ui-button__spinner"><Spinner size="sm" /></span>

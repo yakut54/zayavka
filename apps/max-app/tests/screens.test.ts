@@ -3,57 +3,18 @@ import { i18n } from '@app/i18n'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent } from 'vue'
 
-import { createDemoBridge } from '../src/bridge/demoBridge'
-import { createRealBridge } from '../src/bridge/realBridge'
 import { setMaxBridge, useMaxBridge } from '../src/bridge/useMaxBridge'
 import DemoGate from '../src/features/launch/DemoGate.vue'
 import {
-  type Bootstrap,
   errorCode,
   errorMessage,
   isSessionError,
-  provideBootstrap,
   useBootstrap,
 } from '../src/features/launch/useBootstrap'
-import HomePage from '../src/pages/HomePage.vue'
 import { createAppRouter } from '../src/router'
-
-const DATA: Bootstrap = {
-  user: { first_name: 'Анна' },
-  business: {
-    name: 'Гараж',
-    phone: '+7',
-    address: 'Новосибирск, Ленина 1',
-    working_hours: '',
-    timezone: 'Asia/Novosibirsk',
-  },
-  services: [],
-  resources: [],
-  settings: { cancel_deadline_min: 120, horizon_days: 30 },
-  legal: {
-    policy_version: '1',
-    privacy_url: 'https://example.ru/privacy',
-    consent_url: 'https://example.ru/consent',
-    terms_url: 'https://example.ru/terms',
-    operator: 'ООО «Гараж»',
-    support: 'Телефон поддержки',
-  },
-}
-
-const Host = defineComponent({
-  props: { terms: { type: Boolean, default: true } },
-  setup(props) {
-    provideBootstrap(
-      ref({
-        ...DATA,
-        legal: { ...DATA.legal, terms_url: props.terms ? DATA.legal.terms_url : null },
-      }),
-    )
-    return () => h(HomePage)
-  },
-})
+import { BOOTSTRAP, json, mountApp } from './helpers'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -63,27 +24,34 @@ afterEach(() => {
 describe('HomePage', () => {
   it('показывает бизнес, вкладки и юридические ссылки', async () => {
     const openLink = vi.fn()
-    setMaxBridge(createRealBridge({ initData: 'x', openLink }))
-    render(Host, { global: { plugins: [i18n] } })
-    expect(screen.getByText('Новосибирск, Ленина 1')).toBeTruthy()
+    await mountApp({ app: { openLink } })
+    expect(await screen.findByText('Новосибирск, Ленина 1')).toBeTruthy()
     expect(screen.queryByText('Демо')).toBeNull()
-    await userEvent.click(screen.getByRole('tab', { name: 'Мои записи' }))
-    expect(screen.getByRole('tab', { name: 'Мои записи' }).getAttribute('aria-selected')).toBe(
+    await userEvent.click(screen.getByRole('tab', { name: /Мои записи/ }))
+    expect(screen.getByRole('tab', { name: /Мои записи/ }).getAttribute('aria-selected')).toBe(
       'true',
     )
     await userEvent.click(screen.getByRole('link', { name: /Политика конфиденциальности/ }))
-    await userEvent.click(screen.getByRole('link', { name: /Пользовательское соглашение/ }))
     expect(openLink).toHaveBeenCalledWith('https://example.ru/privacy')
-    expect(openLink).toHaveBeenCalledWith('https://example.ru/terms')
+    expect(screen.queryByRole('link', { name: /Пользовательское соглашение/ })).toBeNull()
     expect(screen.getByText('ООО «Гараж»')).toBeTruthy()
     expect(screen.getByText('Телефон поддержки')).toBeTruthy()
   })
 
-  it('без соглашения ссылки на него нет, в демо виден бейдж', () => {
-    setMaxBridge(createDemoBridge('x', 'Олег'))
-    render(Host, { props: { terms: false }, global: { plugins: [i18n] } })
-    expect(screen.queryByRole('link', { name: /Пользовательское соглашение/ })).toBeNull()
-    expect(screen.getByText('Демо')).toBeTruthy()
+  it('со ссылкой на соглашение она открывается через мост', async () => {
+    const openLink = vi.fn()
+    await mountApp({
+      app: { openLink },
+      handlers: {
+        'GET /api/v1/max/app/bootstrap': () =>
+          json(200, {
+            ...BOOTSTRAP,
+            legal: { ...BOOTSTRAP.legal, terms_url: 'https://example.ru/terms' },
+          }),
+      },
+    })
+    await userEvent.click(await screen.findByRole('link', { name: /Пользовательское соглашение/ }))
+    expect(openLink).toHaveBeenCalledWith('https://example.ru/terms')
   })
 })
 

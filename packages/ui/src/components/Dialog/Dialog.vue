@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MessageKey } from '@app/i18n'
+import type { MessageArgs, MessageKey } from '@app/i18n'
 import { onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 
 import Button from '../Button/Button.vue'
@@ -9,7 +9,9 @@ const props = withDefaults(
   defineProps<{
     open: boolean
     title: MessageKey
+    titleArgs?: MessageArgs
     description?: MessageKey
+    descriptionArgs?: MessageArgs
     confirmLabel: MessageKey
     cancelLabel?: MessageKey
     tone?: 'default' | 'danger'
@@ -67,8 +69,17 @@ onBeforeUnmount(() => dialog.value?.close())
     @click="onBackdropClick"
   >
     <div v-if="open" class="ui-dialog__panel">
-      <h2 :id="titleId" class="ui-dialog__title"><Text :k="title" variant="h3" as="span" /></h2>
-      <Text v-if="description" :id="descriptionId" :k="description" tone="muted" as="p" />
+      <h2 :id="titleId" class="ui-dialog__title">
+        <Text :k="title" :args="titleArgs" variant="h3" as="span" />
+      </h2>
+      <Text
+        v-if="description"
+        :id="descriptionId"
+        :k="description"
+        :args="descriptionArgs"
+        tone="muted"
+        as="p"
+      />
       <slot />
       <div class="ui-dialog__actions">
         <Button :label="cancelLabel" variant="secondary" :disabled="loading" @click="cancel" />

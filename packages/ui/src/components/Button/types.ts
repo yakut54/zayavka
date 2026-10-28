@@ -1,4 +1,4 @@
-import type { MessageKey } from '@app/i18n'
+import type { MessageArgs, MessageKey } from '@app/i18n'
 import type { RouteLocationRaw } from 'vue-router'
 
 import type { IconName } from '../Icon/icons'
@@ -18,6 +18,8 @@ export interface ButtonBaseProps {
 
 export interface ButtonWithLabel extends ButtonBaseProps {
   label: MessageKey
+  /** Подстановки в подпись: «Далее: {time}». */
+  args?: MessageArgs
   iconOnly?: undefined
   ariaLabel?: undefined
 }
@@ -27,6 +29,7 @@ export interface ButtonIconOnly extends ButtonBaseProps {
   /** Обязателен для кнопки без текста. */
   ariaLabel: MessageKey
   label?: undefined
+  args?: undefined
 }
 
 /** Либо `label`, либо пара `iconOnly` + `ariaLabel`; другая комбинация не компилируется. */

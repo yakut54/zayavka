@@ -1,18 +1,55 @@
 <script setup lang="ts">
 import { Badge, Container, Divider, Heading, Link, Stack, Tabs, Text } from '@app/ui'
 import type { TabItem } from '@app/ui'
-import { ref } from 'vue'
+import { useQuery } from '@tanstack/vue-query'
+import { computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { useMaxBridge } from '../bridge/useMaxBridge'
+import { fetchBookings } from '../features/booking/api'
+import ServiceStep from '../features/booking/ServiceStep.vue'
+import { useFlow } from '../features/booking/useFlow'
+import MyBookings from '../features/bookings/MyBookings.vue'
 import { useBootstrap } from '../features/launch/useBootstrap'
+import { useBookingDraft } from '../stores/bookingDraft'
 
 const bootstrap = useBootstrap()
 const bridge = useMaxBridge()
-const tab = ref('book')
-const tabs: TabItem[] = [
+const draft = useBookingDraft()
+const flow = useFlow()
+const route = useRoute()
+const router = useRouter()
+
+const tab = computed({
+  get: () => (route.query.tab === 'mine' ? 'mine' : 'book'),
+  set: (value: string) => void router.replace({ name: 'home', query: { tab: value } }),
+})
+
+// Число предстоящих записей — в бейдже вкладки «Мои записи».
+const upcoming = useQuery({
+  queryKey: ['bookings', 'count'],
+  queryFn: () => fetchBookings('upcoming', 1),
+  staleTime: 30_000,
+})
+const tabs = computed<TabItem[]>(() => [
   { id: 'book', label: 'miniapp.tabs.book' },
-  { id: 'mine', label: 'miniapp.tabs.mine' },
-]
+  {
+    id: 'mine',
+    label: 'miniapp.tabs.mine',
+    ...(upcoming.data.value?.total ? { badge: upcoming.data.value.total } : {}),
+  },
+])
+
+// Начало записи и параметр запуска s_<slug>: услуга предвыбрана, открывается следующий шаг.
+onMounted(async () => {
+  bridge.backButton.hide()
+  const match = /^s_([a-z0-9-]{1,64})$/.exec(bridge.startParam ?? '')
+  const slug = match?.[1]
+  if (slug && !draft.serviceSlug && bootstrap.value.services.some((s) => s.slug === slug)) {
+    draft.setService(slug)
+    await flow.next('service')
+  }
+})
 </script>
 
 <template>
@@ -24,6 +61,8 @@ const tabs: TabItem[] = [
         <p class="home__address">{{ bootstrap.business.address }}</p>
       </header>
       <Tabs v-model="tab" :items="tabs" label="miniapp.tabs.label" />
+      <ServiceStep v-if="tab === 'book'" />
+      <MyBookings v-else />
       <footer class="home__legal">
         <Divider />
         <Link
