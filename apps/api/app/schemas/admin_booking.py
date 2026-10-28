@@ -2,7 +2,16 @@ import uuid
 from datetime import date, datetime
 from typing import Annotated, Literal
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, StrictBool, StringConstraints
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    StrictBool,
+    StringConstraints,
+    ValidationInfo,
+    field_validator,
+)
 
 from app.domain.enums import BookingStatus
 from app.schemas.admin_leads import EventOut
@@ -104,16 +113,30 @@ class CalendarOut(BaseModel):
     working: dict[str, list[Minutes]]  # resource_id → [[start_min, end_min]] выбранного дня
 
 
-class ResourceCreate(InputModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+class _ResourceText(InputModel):
+    """Длина проверяется до обрезки пробелов, иначе схема OpenAPI расходится с проверкой."""
+
+    @field_validator("name", "title", mode="after", check_fields=False)
+    @classmethod
+    def _strip(cls, value: str | None, info: ValidationInfo) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        if info.field_name == "name" and not value:
+            raise ValueError("name is empty")
+        return value
+
+
+class ResourceCreate(_ResourceText):
+    model_config = ConfigDict(extra="forbid")
 
     name: Annotated[str, StringConstraints(min_length=1, max_length=80)]
     title: Annotated[str, StringConstraints(max_length=80)] | None = None
     sort_order: SortOrder = 0
 
 
-class ResourcePatch(InputModel):
-    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+class ResourcePatch(_ResourceText):
+    model_config = ConfigDict(extra="forbid")
 
     name: Annotated[str, StringConstraints(min_length=1, max_length=80)] | None = None
     title: Annotated[str, StringConstraints(max_length=80)] | None = None
