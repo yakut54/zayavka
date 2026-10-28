@@ -305,6 +305,26 @@ async def test_cancel_by_business_notifies_client(
     assert again.status_code == 201
 
 
+async def test_cancel_without_notifying_client(
+    client: AsyncClient, engine: AsyncEngine, admin: uuid.UUID
+) -> None:
+    rid = await seed_resource(engine)
+    uid = await max_booking(client, at(10), rid)
+    r = await client.patch(
+        f"{B}/{uid}",
+        json={"status": "cancelled_by_business", "version": 1, "notify_client": False},
+        headers=csrf(client),
+    )
+    assert r.status_code == 200 and r.json()["status"] == "cancelled_by_business"
+    assert "booking_cancelled_client" not in await outbox_kinds(engine)
+    bad = await client.patch(
+        f"{B}/{uid}",
+        json={"status": "cancelled_by_business", "version": 2, "notify_client": "no"},
+        headers=csrf(client),
+    )
+    assert bad.status_code == 422
+
+
 async def test_cancel_manual_booking_sends_nothing(
     client: AsyncClient, engine: AsyncEngine, admin: uuid.UUID
 ) -> None:
@@ -709,3 +729,41 @@ async def test_booking_settings(client: AsyncClient, admin: uuid.UUID) -> None:
         await client.patch(SETTINGS, json={"horizon_days": 5}, headers=csrf(client))
     ).status_code == 422
     assert (await client.get(SETTINGS)).json()["slot_step_min"] == 30
+
+
+# ---------- экспорт CSV ----------
+
+
+async def test_export_csv_rules(client: AsyncClient, engine: AsyncEngine, admin: uuid.UUID) -> None:
+    rid = await seed_resource(engine)
+    made = await client.post(
+        B,
+        json={**manual(at(10), rid), "name": "=Формула", "comment": "+7 не формула"},
+        headers=csrf(client),
+    )
+    assert made.status_code == 201
+    r = await client.get(f"{B}/export.csv")
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/csv")
+    assert 'attachment; filename="bookings-' in r.headers["content-disposition"]
+    text = r.content.decode("utf-8")
+    assert text.startswith("﻿Номер;Дата;Время;Сотрудник;Услуга;Клиент;Телефон;")
+    line = next(row for row in text.splitlines() if "Формула" in row)
+    # ячейки-формулы получают апостроф, источник и статус — по-русски
+    assert "'=Формула" in line and "'+7 не формула" in line
+    assert ";Админка;Подтверждена;" in line
+    # фильтры те же, что у списка
+    none = await client.get(f"{B}/export.csv", params={"q": "несуществующий"})
+    assert none.content.decode("utf-8").count("\n") == 1
+
+
+async def test_export_csv_errors(client: AsyncClient, admin: uuid.UUID) -> None:
+    too_long = await client.get(
+        f"{B}/export.csv", params={"date_from": "2030-01-01", "date_to": "2030-06-01"}
+    )
+    assert too_long.status_code == 422
+    for method in ("post", "put", "patch", "delete"):
+        r = await getattr(client, method)(f"{B}/export.csv", headers=csrf(client))
+        assert r.status_code == 405, method
+    anonymous = await client.get(f"{B}/export.csv", headers={"Cookie": ""})
+    assert anonymous.status_code in (401, 403)

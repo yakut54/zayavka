@@ -69,7 +69,7 @@ def csv_row(lead: Lead, tz: ZoneInfo, titles: Mapping[str, str]) -> list[str]:
     return [escape_csv_cell(c) for c in cells]
 
 
-def _line(cells: list[str]) -> str:
+def csv_line(cells: list[str]) -> str:
     buffer = io.StringIO()
     csv.writer(buffer, delimiter=CSV_DELIMITER, lineterminator="\r\n").writerow(cells)
     return buffer.getvalue()
@@ -180,10 +180,10 @@ class AdminLeadService:
 
     async def export_csv(self, filters: LeadFilters) -> AsyncIterator[bytes]:
         """Поток CSV: UTF-8 с BOM, разделитель «;» — открывается в русском Excel двойным кликом."""
-        yield (CSV_BOM + _line(CSV_HEADER)).encode()
+        yield (CSV_BOM + csv_line(CSV_HEADER)).encode()
         async with self._sessionmaker() as session:
             async for lead in repo.stream_leads(session, filters, self._tz):
-                yield _line(csv_row(lead, self._tz, self._titles)).encode()
+                yield csv_line(csv_row(lead, self._tz, self._titles)).encode()
 
 
 def export_filename(tz: ZoneInfo) -> str:

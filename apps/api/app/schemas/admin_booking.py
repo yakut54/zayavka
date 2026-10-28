@@ -75,6 +75,7 @@ class AdminBookingStatusUpdate(InputModel):
     status: Literal["completed", "no_show", "cancelled_by_business"]
     cancel_reason: Annotated[str, StringConstraints(max_length=300)] | None = None
     version: Version
+    notify_client: StrictBool = True  # только для отмены; без MAX-пользователя слать некому
 
 
 class AdminReschedule(InputModel):

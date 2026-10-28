@@ -1,7 +1,7 @@
 """Администрирование записи: список и календарь, статусы, сотрудники, график, настройки."""
 
 import uuid
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import AsyncIterator, Callable, Mapping, Sequence
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -52,9 +52,32 @@ from app.schemas.admin_booking import (
 from app.schemas.admin_leads import ActorOut, EventOut
 from app.schemas.max_app import ResourceRef, ServiceRef
 from app.security.sessions import AdminIdentity
+from app.services.admin_leads import CSV_BOM, csv_line, escape_csv_cell, format_phone
 from app.settings import Settings
 
 MAX_RANGE_DAYS = 62
+CSV_HEADER = [
+    "Номер",
+    "Дата",
+    "Время",
+    "Сотрудник",
+    "Услуга",
+    "Клиент",
+    "Телефон",
+    "Источник",
+    "Статус",
+    "Комментарий",
+]
+STATUS_LABELS = {
+    BookingStatus.CONFIRMED: "Подтверждена",
+    BookingStatus.CANCELLED_BY_CLIENT: "Отменена клиентом",
+    BookingStatus.CANCELLED_BY_BUSINESS: "Отменена",
+    BookingStatus.COMPLETED: "Завершена",
+    BookingStatus.NO_SHOW: "Не пришёл",
+    BookingStatus.RESCHEDULED: "Перенесена",
+}
+SOURCE_LABELS = {"max": "MAX", "admin": "Админка", "demo": "Демо"}
+CSV_PAGE_SIZE = 100
 SCHEDULE_CHANGE_REASON = "Изменение графика"
 Clock = Callable[[], datetime]
 
@@ -190,6 +213,60 @@ class BookingAdminService:
             total=total,
         )
 
+    def _csv_row(self, item: AdminBookingOut) -> list[str]:
+        start = item.starts_at.astimezone(self.tz)
+        end = item.ends_at.astimezone(self.tz)
+        cells = [
+            str(item.public_number),
+            start.strftime("%Y-%m-%d"),
+            f"{start:%H:%M}–{end:%H:%M}",
+            item.resource.name,
+            item.service.title,
+            item.client_name,
+            format_phone(item.client_phone_e164),
+            SOURCE_LABELS.get(item.source, item.source),
+            STATUS_LABELS[item.status],
+            item.comment or "",
+        ]
+        return [escape_csv_cell(cell) for cell in cells]
+
+    async def export_csv(
+        self,
+        *,
+        date_from: date | None,
+        date_to: date | None,
+        resource_id: uuid.UUID | None,
+        status: BookingStatus | None,
+        q: str | None,
+    ) -> AsyncIterator[bytes]:
+        """Поток CSV по правилам списка заявок: UTF-8 с BOM, «;», защита от формул."""
+        # диапазон проверяется до начала потока: ошибка должна быть 422, а не оборванный файл
+        first_page = await self.search(
+            date_from=date_from,
+            date_to=date_to,
+            resource_id=resource_id,
+            status=status,
+            q=q,
+            page=1,
+            page_size=CSV_PAGE_SIZE,
+        )
+        yield (CSV_BOM + csv_line(CSV_HEADER)).encode()
+        page = first_page
+        while True:
+            for item in page.items:
+                yield csv_line(self._csv_row(item)).encode()
+            if page.page * page.page_size >= page.total:
+                return
+            page = await self.search(
+                date_from=date_from,
+                date_to=date_to,
+                resource_id=resource_id,
+                status=status,
+                q=q,
+                page=page.page + 1,
+                page_size=CSV_PAGE_SIZE,
+            )
+
     async def calendar(self, day: date) -> CalendarOut:
         start, end = self._day_bounds(day, day)
         async with self._sessionmaker() as session:
@@ -286,6 +363,7 @@ class BookingAdminService:
         status: str,
         cancel_reason: str | None,
         version: int,
+        notify_client: bool = True,
     ) -> AdminBookingOut:
         target = BookingStatus(status)
         async with self._sessionmaker() as session, session.begin():
@@ -306,7 +384,12 @@ class BookingAdminService:
                 return booking_out(booking, resource)
             previous = booking.status
             await self._apply_status(
-                session, booking, target, cancel_reason=cancel_reason, identity=identity
+                session,
+                booking,
+                target,
+                cancel_reason=cancel_reason,
+                identity=identity,
+                notify_client=notify_client,
             )
             if target != BookingStatus.CANCELLED_BY_BUSINESS:
                 await repo.add_event(
@@ -327,6 +410,7 @@ class BookingAdminService:
         *,
         cancel_reason: str | None,
         identity: AdminIdentity | None,
+        notify_client: bool = True,
     ) -> None:
         reason = (cancel_reason or "").strip() or None
         await repo.set_status(session, booking, target, now=self._clock(), cancel_reason=reason)
@@ -341,7 +425,7 @@ class BookingAdminService:
             actor_user_id=identity.user_id if identity else None,
             payload={"by": "business", "reason": reason},
         )
-        if booking.max_user_id is not None:
+        if notify_client and booking.max_user_id is not None:
             await repo.add_outbox(
                 session,
                 kind="booking_cancelled_client",

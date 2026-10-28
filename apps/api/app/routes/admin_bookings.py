@@ -1,7 +1,10 @@
 import uuid
+from collections.abc import AsyncIterator
+from datetime import datetime
 from typing import Annotated, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi.responses import StreamingResponse
 from pydantic import AfterValidator
 
 from app.auth_deps import CsrfAdmin, CurrentAdmin
@@ -82,6 +85,43 @@ async def slots(
     )
 
 
+@router.get("/export.csv", response_class=StreamingResponse)
+async def export_bookings(
+    _: CurrentAdmin,
+    service: Admin,
+    date_from: IsoDate | None = None,
+    date_to: IsoDate | None = None,
+    resource_id: uuid.UUID | None = None,
+    status: BookingStatus | None = None,
+    q: Annotated[str | None, Query(max_length=100), AfterValidator(_safe_q)] = None,
+) -> StreamingResponse:
+    stream = service.export_csv(
+        date_from=date_from, date_to=date_to, resource_id=resource_id, status=status, q=q
+    )
+    # первая порция читается здесь: ошибка диапазона дат — обычный 422, а не пустой файл
+    first = await anext(stream)
+    filename = f"bookings-{datetime.now(service.tz):%Y-%m-%d}.csv"
+
+    async def body() -> AsyncIterator[bytes]:
+        yield first
+        async for chunk in stream:
+            yield chunk
+
+    return StreamingResponse(
+        body(),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.api_route(
+    "/export.csv", methods=["POST", "PUT", "PATCH", "DELETE"], include_in_schema=False
+)
+async def export_wrong_method() -> None:
+    """Иначе PATCH /export.csv попал бы в /{booking_id} и вернул 422 вместо 405."""
+    raise HTTPException(405, headers={"Allow": "GET"})
+
+
 @router.api_route("/calendar", methods=["PATCH"], include_in_schema=False)
 @router.api_route("/slots", methods=["PATCH"], include_in_schema=False)
 async def static_paths_wrong_method() -> None:
@@ -111,6 +151,7 @@ async def update_booking(
         status=body.status,
         cancel_reason=body.cancel_reason,
         version=body.version,
+        notify_client=body.notify_client,
     )
 
 
