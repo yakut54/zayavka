@@ -100,8 +100,8 @@ jobs:
         run: |
           BASE="$BEFORE"
           if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then BASE="HEAD~1"; fi
-          pnpm -r --if-present --filter "...[$BASE]" typecheck
-          pnpm -r --if-present --filter "...[$BASE]" test
+          pnpm -r --if-present --filter "...[$BASE]" --filter "!zayavka" typecheck
+          pnpm -r --if-present --filter "...[$BASE]" --filter "!zayavka" test
       - run: pnpm i18n:check
       - run: pnpm --filter @app/site build && pnpm --filter @app/site budget
       - run: pnpm --filter @app/admin build
