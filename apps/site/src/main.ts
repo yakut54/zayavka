@@ -12,6 +12,10 @@ import { routes, scrollBehavior } from './router'
 z.config({ jitless: true })
 
 // vite-ssg: `createApp` вместо `createApp(App).mount('#app')`
-export const createApp = ViteSSG(App, { routes, scrollBehavior }, ({ app }) => {
-  app.use(i18n)
-})
+export const createApp = ViteSSG(
+  App,
+  { routes, scrollBehavior, base: import.meta.env.BASE_URL },
+  ({ app }) => {
+    app.use(i18n)
+  },
+)

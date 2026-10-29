@@ -1,0 +1,47 @@
+name: pages
+
+# Витрина-лендинг на GitHub Pages (демо для портфолио): только статика сайта.
+# Форма заявки, мини-приложение и админка требуют API и здесь не работают.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/site/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 24, cache: pnpm }
+      - uses: actions/configure-pages@v6
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @app/site build
+        env:
+          SITE_BASE: /${{ github.event.repository.name }}/
+      - name: Страница 404 и отключение Jekyll
+        run: |
+          cp apps/site/dist/404/index.html apps/site/dist/404.html
+          touch apps/site/dist/.nojekyll
+      - uses: actions/upload-pages-artifact@v5
+        with: { path: apps/site/dist }
+      - id: deployment
+        uses: actions/deploy-pages@v5

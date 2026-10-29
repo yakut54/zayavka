@@ -21,6 +21,8 @@ const ssgOptions: ViteSSGOptions = {
 }
 
 export default defineConfig({
+  // SITE_BASE=/zayavka/ — публикация в подкаталоге (GitHub Pages); по умолчанию корень
+  base: process.env.SITE_BASE ?? '/',
   plugins: [
     vue(),
     // Сообщения компилируются при сборке: в бандл попадает только runtime vue-i18n.
